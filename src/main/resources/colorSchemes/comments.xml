@@ -1,0 +1,18 @@
+<?xml version='1.0'?>
+<list>
+    <option name="INFO_COMMENT">
+        <value>
+            <option name="FOREGROUND" value="98C379"/>
+        </value>
+    </option>
+    <option name="WARN_COMMENT">
+        <value>
+            <option name="FOREGROUND" value="3498DB"/>
+        </value>
+    </option>
+    <option name="ERROR_COMMENT">
+        <value>
+            <option name="FOREGROUND" value="FF2D00"/>
+        </value>
+    </option>
+</list>

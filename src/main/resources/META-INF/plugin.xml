@@ -1,0 +1,32 @@
+<idea-plugin>
+    <id>com.clutcher.comments_highlighter</id>
+    <name>Comments Highlighter</name>
+    <vendor email="iclutcher@gmail.com" url="https://clutcher.github.io">clutcher</vendor>
+
+    <description>Highlight comments extension will help you create more human-friendly comments in your code
+    </description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <annotator language=""
+                   implementationClass="com.clutcher.comments.annotator.CommentHighlighterAnnotator"/>
+
+        <colorSettingsPage implementation="com.clutcher.comments.settings.CommentHighlighterColorSettingsPage"/>
+
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/comments.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/comments.xml"/>
+
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+
+</idea-plugin>
