@@ -20,10 +20,16 @@ public class CommentHighlighterAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof PsiComment) {
-
             String elementText = element.getText();
-            boolean isMultiline = elementText.contains(NEW_LINE);
-            if (isMultiline) {
+
+            boolean isSingleLine = !elementText.contains(NEW_LINE);
+            if (isSingleLine) {
+                TextAttributesKey highlightAttribute = getHighlightTextAttribute(elementText, false);
+                if (highlightAttribute != null) {
+                    Annotation annotation = holder.createInfoAnnotation(element, null);
+                    annotation.setTextAttributes(highlightAttribute);
+                }
+            } else {
                 int startIndex = element.getTextRange().getStartOffset();
                 int endIndex = element.getTextRange().getStartOffset();
 
@@ -37,13 +43,6 @@ public class CommentHighlighterAnnotator implements Annotator {
                         Annotation annotation = holder.createInfoAnnotation(textRange, null);
                         annotation.setTextAttributes(highlightAttribute);
                     }
-
-                }
-            } else {
-                TextAttributesKey highlightAttribute = getHighlightTextAttribute(elementText, false);
-                if (highlightAttribute != null) {
-                    Annotation annotation = holder.createInfoAnnotation(element, null);
-                    annotation.setTextAttributes(highlightAttribute);
                 }
             }
         }

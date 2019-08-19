@@ -41,8 +41,11 @@ public class HighlightTextAttributeUtils {
     }
 
     private static boolean isHighlightTextCharacter(char currentChar, String line, int i) {
-        // Optimized check to not highlight "/*" and "*/" lines
-        return !IGNORE_START_LINE_CHARACTERS_LIST.contains(currentChar) && ((currentChar != '/' && currentChar != '*') || line.indexOf("/*") != i - 1 && line.indexOf("*/") != i);
+        return !IGNORE_START_LINE_CHARACTERS_LIST.contains(currentChar) &&
+                // Optimized check to not highlight "/*" and "*/" lines
+                !(currentChar == '*' && ((i > 0 && line.indexOf("/*") == i - 1) || line.indexOf("*/") == i)) &&
+                // Optimized check to not highlight "<!--"
+                !(currentChar == '!' && (i > 0 && line.indexOf("<!--") == i - 1));
     }
 
 

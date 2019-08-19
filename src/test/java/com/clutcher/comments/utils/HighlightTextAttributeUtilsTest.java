@@ -60,6 +60,18 @@ public class HighlightTextAttributeUtilsTest {
         Assert.assertNull("Wrong text attribute assigned", highlightTextAttribute);
     }
 
+    @Test
+    public void shouldFindNoCommentInXMLComments() {
+        // given
+        String noComment = "<!-- Empty comment -->";
+
+        // when
+        TextAttributesKey highlightTextAttribute = HighlightTextAttributeUtils.getHighlightTextAttribute(noComment, false);
+
+        // then
+        Assert.assertNull("Wrong text attribute assigned", highlightTextAttribute);
+    }
+
 
     /**
      * Tests for multiline comments
