@@ -7,12 +7,12 @@
     </option>
     <option name="WARN_COMMENT">
         <value>
-            <option name="FOREGROUND" value="3498DB"/>
+            <option name="FOREGROUND" value="5394EC"/>
         </value>
     </option>
     <option name="ERROR_COMMENT">
         <value>
-            <option name="FOREGROUND" value="FF2D00"/>
+            <option name="FOREGROUND" value="CC666E"/>
         </value>
     </option>
 </list>
