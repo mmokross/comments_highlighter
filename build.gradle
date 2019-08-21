@@ -23,5 +23,5 @@ intellij {
 patchPluginXml {
     changeNotes """
       Performance improvements.
-      Change default color scheme."""
+      Changed default color scheme."""
 }
