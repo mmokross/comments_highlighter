@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.clutcher'
-version '1.1'
+version '1.2'
 
 sourceCompatibility = 1.8
 
@@ -22,5 +22,6 @@ intellij {
 }
 patchPluginXml {
     changeNotes """
-      Fix fail positive highlight of xml comments."""
+      Performance improvements.
+      Change default color scheme."""
 }
