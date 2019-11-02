@@ -1,7 +1,9 @@
 package com.clutcher.comments.utils;
 
+import com.clutcher.comments.configuration.CommentTokenConfiguration;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.TextRange;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,13 +12,10 @@ import java.util.Map;
 
 public class HighlightTextAttributeUtils {
 
+    private HighlightTextAttributeUtils() {
+    }
+
     private static final List<Character> START_LINE_CHARACTERS_LIST = Arrays.asList('/', '<', '-', ' ', '#', '*', '!');
-
-
-    public static final TextAttributesKey INFO_COMMENT = TextAttributesKey.createTextAttributesKey("INFO_COMMENT");
-    public static final TextAttributesKey WARN_COMMENT = TextAttributesKey.createTextAttributesKey("WARN_COMMENT");
-    public static final TextAttributesKey ERROR_COMMENT = TextAttributesKey.createTextAttributesKey("ERROR_COMMENT");
-
 
     public static Map<TextRange, TextAttributesKey> getCommentHighlights(String comment, int startOffset) {
         // General comment data
@@ -60,9 +59,10 @@ public class HighlightTextAttributeUtils {
             }
 
             // Create highlight if current char is valid highlight char
-            if (isHighlightTriggerChar(c) && isValidPosition(comment, i)) {
+            if (isValidPosition(comment, i) && isHighlightTriggerChar(c) && containsHighlightToken(comment.substring(i))) {
                 isHighlightedCurrentLine = true;
-                currentLineHighlightAttribute = getHighlightTextAttribute(c);
+                isProcessedCurrentLine = true;
+                currentLineHighlightAttribute = getHighlightTextAttribute(comment.substring(i));
             }
 
             // Check that line highlight was defined and no more processing needs
@@ -96,18 +96,39 @@ public class HighlightTextAttributeUtils {
     }
 
     private static boolean isHighlightTriggerChar(char c) {
-        return c == '*' || c == '?' || c == '!';
+        final List<String> allCommentTokens = CommentTokenConfiguration.getInstance().getAllTokens();
+        for (String token : allCommentTokens) {
+            if (token.charAt(0) == c) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    private static TextAttributesKey getHighlightTextAttribute(char firstChar) {
-        if (firstChar == '*') {
-            return INFO_COMMENT;
-        } else if (firstChar == '?') {
-            return WARN_COMMENT;
-        } else if (firstChar == '!') {
-            return ERROR_COMMENT;
+    private static boolean containsHighlightToken(String commentSubstring) {
+        final List<String> allCommentTokens = CommentTokenConfiguration.getInstance().getAllTokens();
+        for (String token : allCommentTokens) {
+            if (commentSubstring.startsWith(token)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private static TextAttributesKey getHighlightTextAttribute(String commentSubstring) {
+        final List<String> allCommentTokens = CommentTokenConfiguration.getInstance().getAllTokens();
+        for (String token : allCommentTokens) {
+            if (commentSubstring.startsWith(token)) {
+                return TextAttributesKey.createTextAttributesKey(getTextAttributeKeyByToken(token));
+            }
         }
         return null;
     }
 
+    @NotNull
+    public static String getTextAttributeKeyByToken(String token) {
+        return token + "_COMMENT";
+    }
 }

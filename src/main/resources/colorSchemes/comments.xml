@@ -1,16 +1,16 @@
 <?xml version='1.0'?>
 <list>
-    <option name="INFO_COMMENT">
+    <option name="*_COMMENT">
         <value>
             <option name="FOREGROUND" value="98C379"/>
         </value>
     </option>
-    <option name="WARN_COMMENT">
+    <option name="?_COMMENT">
         <value>
             <option name="FOREGROUND" value="5394EC"/>
         </value>
     </option>
-    <option name="ERROR_COMMENT">
+    <option name="!_COMMENT">
         <value>
             <option name="FOREGROUND" value="CC666E"/>
         </value>

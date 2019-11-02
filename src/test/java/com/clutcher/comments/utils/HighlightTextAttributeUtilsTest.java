@@ -2,19 +2,24 @@ package com.clutcher.comments.utils;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.testFramework.LightPlatformTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Map;
 
-public class HighlightTextAttributeUtilsTest {
+public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
+
+    private static final TextAttributesKey INFO_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("*"));
+    private static final TextAttributesKey WARN_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("?"));
+    private static final TextAttributesKey ERROR_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("!"));
 
     /**
      * Tests for one line comments
      */
 
     @Test
-    public void shouldFindOneLineInfoComment() {
+    public void testFindOneLineInfoComment() {
         // given
         String comment = " //  * testing string";
 
@@ -23,11 +28,11 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.INFO_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", INFO_COMMENT, highlights.values().iterator().next());
     }
 
     @Test
-    public void shouldFindOneLineWarnComment() {
+    public void testFindOneLineWarnComment() {
         // given
         String comment = " //  ?   ANOTHER TESTING STRING  ";
 
@@ -36,12 +41,12 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.WARN_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", WARN_COMMENT, highlights.values().iterator().next());
     }
 
 
     @Test
-    public void shouldFindOneLineErrorComment() {
+    public void testFindOneLineErrorComment() {
         // given
         String comment = " //!12232132131";
 
@@ -50,12 +55,12 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.ERROR_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.values().iterator().next());
     }
 
 
     @Test
-    public void shouldFindNoComment() {
+    public void testFindNoComment() {
         // given
         String comment = "//1!2232132131";
 
@@ -67,7 +72,7 @@ public class HighlightTextAttributeUtilsTest {
     }
 
     @Test
-    public void shouldFindNoCommentInXMLComments() {
+    public void testFindNoCommentInXMLComments() {
         // given
         String comment = "<!-- Empty comment -->";
 
@@ -84,7 +89,7 @@ public class HighlightTextAttributeUtilsTest {
      */
 
     @Test
-    public void shouldFindInfoCommentInMultilineComment() {
+    public void testFindInfoCommentInMultilineComment() {
         // given
         String comment = "/*\n" +
                 "* Info comment\n" +
@@ -95,11 +100,11 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.INFO_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", INFO_COMMENT, highlights.values().iterator().next());
     }
 
     @Test
-    public void shouldFindWarnCommentInMultilineComment() {
+    public void testFindWarnCommentInMultilineComment() {
         // given
         String comment = "/*\n" +
                 "? Warn comment\n" +
@@ -110,12 +115,12 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.WARN_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", WARN_COMMENT, highlights.values().iterator().next());
     }
 
 
     @Test
-    public void shouldFindErrorCommentInMultilineComment() {
+    public void testFindErrorCommentInMultilineComment() {
         // given
         String comment = "/*\n" +
                 " ! Error comment\n" +
@@ -126,7 +131,7 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.ERROR_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.values().iterator().next());
     }
 
 
@@ -136,7 +141,7 @@ public class HighlightTextAttributeUtilsTest {
 
 
     @Test
-    public void shouldFindInfoCommentInDocLineComment() {
+    public void testFindInfoCommentInDocLineComment() {
         // given
         String comment = "/**\n" +
                 " * Doc comment\n" +
@@ -150,12 +155,12 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.INFO_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", INFO_COMMENT, highlights.values().iterator().next());
 
     }
 
     @Test
-    public void shouldFindWarnCommentInDocLineComment() {
+    public void testFindWarnCommentInDocLineComment() {
         // given
         String comment = "/**\n" +
                 " * Doc comment\n" +
@@ -169,12 +174,12 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.WARN_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", WARN_COMMENT, highlights.values().iterator().next());
     }
 
 
     @Test
-    public void shouldFindErrorCommentInDocLineComment() {
+    public void testFindErrorCommentInDocLineComment() {
         // given
         String comment = "/**\n" +
                 " * Doc comment\n" +
@@ -188,7 +193,7 @@ public class HighlightTextAttributeUtilsTest {
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", HighlightTextAttributeUtils.ERROR_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.values().iterator().next());
     }
 
 }
