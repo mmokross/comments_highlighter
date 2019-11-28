@@ -18,10 +18,9 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2019.2'
+    version '2019.3'
 }
 patchPluginXml {
     changeNotes """
-      Performance improvements.
-      Changed default color scheme."""
+      Add possibility to add custom tokens"""
 }
