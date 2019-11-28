@@ -6,7 +6,7 @@ import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vcs.VcsBundle;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.UIBundle;
 import com.intellij.ui.table.JBTable;
@@ -36,10 +36,16 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
         }
     };
 
+    private JLabel reopenLabel;
+
     public CommentTokensConfigurationPanel() {
         super(new BorderLayout());
+
+        reopenLabel = new JLabel(XmlStringUtil.wrapInHtml("Reopen setting window to update token on Color settings page (https://youtrack.jetbrains.com/issue/IDEA-226087)"));
+        reopenLabel.setForeground(JBColor.RED);
+
         myTokenTable = new JBTable();
-        myTokenTable.getEmptyText().setText(VcsBundle.message("issue.link.no.patterns"));
+        myTokenTable.getEmptyText().setText("No tokens defined");
         reset();
         add(
                 new JLabel(XmlStringUtil.wrapInHtml("Custom comment tokens would be used to highlight comments based on color settings")),
@@ -95,6 +101,7 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
 
     @Override
     public void apply() {
+        add(reopenLabel, BorderLayout.SOUTH);
         CommentTokenConfiguration.getInstance().setCustomTokens(myTokens);
     }
 
