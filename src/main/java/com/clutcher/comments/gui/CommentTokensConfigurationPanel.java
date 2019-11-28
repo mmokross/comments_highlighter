@@ -41,7 +41,7 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
     public CommentTokensConfigurationPanel() {
         super(new BorderLayout());
 
-        reopenLabel = new JLabel(XmlStringUtil.wrapInHtml("Reopen setting window to update token on Color settings page (https://youtrack.jetbrains.com/issue/IDEA-226087)"));
+        reopenLabel = new JLabel(XmlStringUtil.wrapInHtml("Reopen setting window to see new tokens on Color settings page (https://youtrack.jetbrains.com/issue/IDEA-226087)"));
         reopenLabel.setForeground(JBColor.RED);
 
         myTokenTable = new JBTable();

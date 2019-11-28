@@ -22,5 +22,5 @@ intellij {
 }
 patchPluginXml {
     changeNotes """
-      Add possibility to add custom tokens"""
+      Add possibility to create custom tokens"""
 }
