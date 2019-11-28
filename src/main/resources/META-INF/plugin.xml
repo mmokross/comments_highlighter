@@ -3,6 +3,7 @@
     <name>Comments Highlighter</name>
     <vendor email="iclutcher@gmail.com" url="https://clutcher.github.io">clutcher</vendor>
 
+    <idea-version since-build="191" until-build="193.*"/>
     <description>Highlight comments extension will help you create more human-friendly comments in your code
     </description>
 
