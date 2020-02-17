@@ -33,6 +33,7 @@ public class HighlightTextAttributeUtils {
         // Result map from which annotation would be created
         Map<TextRange, TextAttributesKey> highlightAnnotationData = new HashMap<>();
 
+        // Code is a little bit crappy, but has better performance
         for (int i = 0; i < commentLength; i++) {
             char c = comment.charAt(i);
             // Reset attributes and create highlight on line end

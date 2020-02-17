@@ -19,7 +19,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
      */
 
     @Test
-    public void testFindOneLineInfoComment() {
+    public void shouldFindOneLineInfoComment() {
         // given
         String comment = " //  * testing string";
 
@@ -32,7 +32,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
     }
 
     @Test
-    public void testFindOneLineWarnComment() {
+    public void shouldFindOneLineWarnComment() {
         // given
         String comment = " //  ?   ANOTHER TESTING STRING  ";
 
@@ -46,7 +46,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
 
 
     @Test
-    public void testFindOneLineErrorComment() {
+    public void shouldFindOneLineErrorComment() {
         // given
         String comment = " //!12232132131";
 
@@ -60,7 +60,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
 
 
     @Test
-    public void testFindNoComment() {
+    public void shouldFindNoComment() {
         // given
         String comment = "//1!2232132131";
 
@@ -72,7 +72,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
     }
 
     @Test
-    public void testFindNoCommentInXMLComments() {
+    public void shouldFindNoCommentInXMLComments() {
         // given
         String comment = "<!-- Empty comment -->";
 
@@ -89,7 +89,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
      */
 
     @Test
-    public void testFindInfoCommentInMultilineComment() {
+    public void shouldFindInfoCommentInMultilineComment() {
         // given
         String comment = "/*\n" +
                 "* Info comment\n" +
@@ -104,7 +104,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
     }
 
     @Test
-    public void testFindWarnCommentInMultilineComment() {
+    public void shouldFindWarnCommentInMultilineComment() {
         // given
         String comment = "/*\n" +
                 "? Warn comment\n" +
@@ -120,7 +120,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
 
 
     @Test
-    public void testFindErrorCommentInMultilineComment() {
+    public void shouldFindErrorCommentInMultilineComment() {
         // given
         String comment = "/*\n" +
                 " ! Error comment\n" +
@@ -141,7 +141,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
 
 
     @Test
-    public void testFindInfoCommentInDocLineComment() {
+    public void shouldFindInfoCommentInDocLineComment() {
         // given
         String comment = "/**\n" +
                 " * Doc comment\n" +
@@ -160,7 +160,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
     }
 
     @Test
-    public void testFindWarnCommentInDocLineComment() {
+    public void shouldFindWarnCommentInDocLineComment() {
         // given
         String comment = "/**\n" +
                 " * Doc comment\n" +
@@ -179,7 +179,7 @@ public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
 
 
     @Test
-    public void testFindErrorCommentInDocLineComment() {
+    public void shouldFindErrorCommentInDocLineComment() {
         // given
         String comment = "/**\n" +
                 " * Doc comment\n" +
