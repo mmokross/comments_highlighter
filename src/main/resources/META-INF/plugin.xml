@@ -4,8 +4,8 @@
     <vendor email="iclutcher@gmail.com" url="https://clutcher.github.io">clutcher</vendor>
 
     <description><![CDATA[
-      <p>Plugin to highlight comments. Would work for any language, supported by Intellij. Allows to define custom user tokens.</p>
-      <p><h2>How to add custom tokens<h2></p>
+      <p>This plugin is a replacement of Better Comments plugin, which has limited language support. Comments Highlighter plugin would work with any language, supported by Intellij. Plugin has possibility to define custom user tokens.</p>
+      <h3>How to add custom user token:</h3>
       <ul>
         <li>Open settings window</li>
         <li>Tools->Comments Highlighter Settings</li>
