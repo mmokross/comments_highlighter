@@ -13,19 +13,19 @@ General architecture is simple and has 2 main parts:
 + **HighlightTextAttributeUtils** main class to define, what part of comment must be highlighted. Is covered by HighlightTextAttributeUtilsTest. 
 
 ## Version history
-###1.3.2
+### 1.3.2
 + **(Documentation)** Add how-to define custom user token.
 
-###1.3.1
+### 1.3.1
 + **(Feature)** Add possibility to create custom tokens.
 + **(Bug Fix)** Define plugin compatibility starting from version 2019.1.
 
-###1.2
+### 1.2
 + **(Feature)** Improve performance.
 + **(Feature)** Change default color scheme.
 
-###1.1
+### 1.1
 + **(Bug Fix)** Fix fail positive highlight of xml comments.
 
-###1.0
+### 1.0
 + **(Feature)** Add support for one line, multi line and doc comments highlighting.
