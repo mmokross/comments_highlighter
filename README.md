@@ -13,6 +13,9 @@ General architecture is simple and has 2 main parts:
 + **HighlightTextAttributeUtils** main class to define, what part of comment must be highlighted. Is covered by HighlightTextAttributeUtilsTest. 
 
 ## Version history
+### 1.3.3
++ **(Bug Fix)** Made compatible with EAP builds.
+
 ### 1.3.2
 + **(Documentation)** Add how-to define custom user token.
 
