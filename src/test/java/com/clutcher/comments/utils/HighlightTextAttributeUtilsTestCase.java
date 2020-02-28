@@ -3,16 +3,27 @@ package com.clutcher.comments.utils;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.testFramework.LightPlatformTestCase;
+import com.intellij.testFramework.TestApplicationManager;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.util.Map;
 
-public class HighlightTextAttributeUtilsTest extends LightPlatformTestCase {
+@RunWith(JUnit4.class)
+public class HighlightTextAttributeUtilsTestCase extends LightPlatformTestCase {
 
     private static final TextAttributesKey INFO_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("*"));
     private static final TextAttributesKey WARN_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("?"));
     private static final TextAttributesKey ERROR_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("!"));
+
+    @Before
+    public void testSetup() {
+        TestApplicationManager testApplicationManager = initApplication();
+        Assert.assertNotNull("ServiceManager is not available for CommentTokenConfiguration.class.", testApplicationManager);
+    }
 
     /**
      * Tests for one line comments
