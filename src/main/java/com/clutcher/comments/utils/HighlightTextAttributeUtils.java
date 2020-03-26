@@ -81,12 +81,17 @@ public class HighlightTextAttributeUtils {
 
     private static boolean isValidPosition(String comment, int i) {
         char c = comment.charAt(i);
-        if (c == '!') {
-            // Skip "<!-" and shebang "#!/"
-            return !((comment.charAt(i - 1) == '<' && comment.charAt(i + 1) == '-') || (comment.charAt(i - 1) == '#' && comment.charAt(i + 1) == '/'));
-        } else if (c == '*') {
-            // Skip "/*", "*/", "/**"
-            return !(comment.charAt(i - 1) == '/' || (comment.charAt(i - 2) == '/' && comment.charAt(i - 1) == '*') || comment.charAt(i + 1) == '/');
+        // Length and i checks is used to not fall in StringIndexOutOfBoundsException
+        if (i > 0) {
+            int length = comment.length();
+            if (c == '!' && length >= 3) {
+                // Skip "<!-" and shebang "#!/"
+                return !((comment.charAt(i - 1) == '<' && comment.charAt(i + 1) == '-') || (comment.charAt(i - 1) == '#' && comment.charAt(i + 1) == '/'));
+            } else if (c == '*') {
+
+                // Skip "/*", "*/", "/**"
+                return !(comment.charAt(i - 1) == '/' || (i >= 2 && comment.charAt(i - 2) == '/' && comment.charAt(i - 1) == '*') || ((i + 1) < length && comment.charAt(i + 1) == '/'));
+            }
         }
 
         return true;

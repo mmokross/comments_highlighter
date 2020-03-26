@@ -207,4 +207,28 @@ public class HighlightTextAttributeUtilsTestCase extends LightPlatformTestCase {
         Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.values().iterator().next());
     }
 
+    @Test
+    public void shouldNotThrowStringIndexOutOfBoundsExceptionOnStarEdgeCase() {
+        // given
+        String comment = "* ";
+
+        // when
+        Map<TextRange, TextAttributesKey> highlights = HighlightTextAttributeUtils.getCommentHighlights(comment, 0);
+
+        // then
+        Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
+    }
+
+    @Test
+    public void shouldNotThrowStringIndexOutOfBoundsExceptionOnExclamationEdgeCase() {
+        // given
+        String comment = "! ";
+
+        // when
+        Map<TextRange, TextAttributesKey> highlights = HighlightTextAttributeUtils.getCommentHighlights(comment, 0);
+
+        // then
+        Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
+    }
+
 }
