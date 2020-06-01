@@ -18,7 +18,5 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    patchPluginXml {
-        sinceBuild '191'
-    }
+    updateSinceUntilBuild false
 }
