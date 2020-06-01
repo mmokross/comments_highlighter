@@ -12,8 +12,11 @@ import org.junit.runners.JUnit4;
 
 import java.util.Map;
 
+/**
+ * Tests for one line comments
+ */
 @RunWith(JUnit4.class)
-public class HighlightTextAttributeUtilsTestCase extends LightPlatformTestCase {
+public class OneLineCommentHighlightTextAttributeUtilsTestCase extends LightPlatformTestCase {
 
     private static final TextAttributesKey INFO_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("*"));
     private static final TextAttributesKey WARN_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("?"));
@@ -24,10 +27,6 @@ public class HighlightTextAttributeUtilsTestCase extends LightPlatformTestCase {
         TestApplicationManager testApplicationManager = initApplication();
         Assert.assertNotNull("ServiceManager is not available for CommentTokenConfiguration.class.", testApplicationManager);
     }
-
-    /**
-     * Tests for one line comments
-     */
 
     @Test
     public void shouldFindOneLineInfoComment() {

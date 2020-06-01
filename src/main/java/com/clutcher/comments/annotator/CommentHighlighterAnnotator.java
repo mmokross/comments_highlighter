@@ -1,9 +1,9 @@
 package com.clutcher.comments.annotator;
 
 import com.clutcher.comments.utils.HighlightTextAttributeUtils;
-import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
+import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiComment;
@@ -23,8 +23,10 @@ public class CommentHighlighterAnnotator implements Annotator {
             Map<TextRange, TextAttributesKey> highlightAnnotationData = HighlightTextAttributeUtils.getCommentHighlights(comment, startOffset);
 
             highlightAnnotationData.forEach((range, highlightAttribute) -> {
-                Annotation annotation = holder.createInfoAnnotation(range, null);
-                annotation.setTextAttributes(highlightAttribute);
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .range(range)
+                        .textAttributes(highlightAttribute)
+                        .create();
             });
         }
     }
