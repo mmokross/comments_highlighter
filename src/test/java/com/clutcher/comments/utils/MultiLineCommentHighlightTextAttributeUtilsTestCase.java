@@ -24,7 +24,7 @@ public class MultiLineCommentHighlightTextAttributeUtilsTestCase extends LightPl
 
     @Before
     public void testSetup() {
-        TestApplicationManager testApplicationManager = initApplication();
+        TestApplicationManager testApplicationManager = getApplication();
         Assert.assertNotNull("ServiceManager is not available for CommentTokenConfiguration.class.", testApplicationManager);
     }
 
