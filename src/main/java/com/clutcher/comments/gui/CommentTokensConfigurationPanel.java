@@ -1,8 +1,9 @@
 package com.clutcher.comments.gui;
 
-import com.clutcher.comments.configuration.CommentTokenConfiguration;
+import com.clutcher.comments.configuration.HighlightTokenConfiguration;
 import com.intellij.CommonBundle;
 import com.intellij.openapi.application.ApplicationBundle;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.Messages;
@@ -102,17 +103,17 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
     @Override
     public void apply() {
         add(reopenLabel, BorderLayout.SOUTH);
-        CommentTokenConfiguration.getInstance().setCustomTokens(myTokens);
+        ServiceManager.getService(HighlightTokenConfiguration.class).setCustomCommentTokens(myTokens);
     }
 
     @Override
     public boolean isModified() {
-        return !myTokens.equals(CommentTokenConfiguration.getInstance().getCustomTokens());
+        return !myTokens.equals(ServiceManager.getService(HighlightTokenConfiguration.class).getCustomCommentTokens());
     }
 
     @Override
     public void reset() {
-        myTokens = new ArrayList<>(CommentTokenConfiguration.getInstance().getCustomTokens());
+        myTokens = new ArrayList<>(ServiceManager.getService(HighlightTokenConfiguration.class).getCustomCommentTokens());
         myModel = new ListTableModel<>(new ColumnInfo[]{NAME_COLUMN,}, myTokens, 0);
         myTokenTable.setModel(myModel);
     }

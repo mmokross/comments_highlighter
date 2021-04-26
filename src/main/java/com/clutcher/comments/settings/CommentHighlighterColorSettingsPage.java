@@ -1,6 +1,6 @@
 package com.clutcher.comments.settings;
 
-import com.clutcher.comments.configuration.CommentTokenConfiguration;
+import com.clutcher.comments.configuration.HighlightTokenConfiguration;
 import com.clutcher.comments.highlighter.impl.CommentHighlighter;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
@@ -45,7 +45,7 @@ public class CommentHighlighterColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public AttributesDescriptor[] getAttributeDescriptors() {
-        List<String> tokens = CommentTokenConfiguration.getInstance().getAllTokens();
+        List<String> tokens = ServiceManager.getService(HighlightTokenConfiguration.class).getAllCommentTokens();
         int size = tokens.size();
 
         AttributesDescriptor[] attributesDescriptors = new AttributesDescriptor[size];

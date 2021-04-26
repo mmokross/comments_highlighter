@@ -69,14 +69,16 @@
         <colorSettingsPage implementation="com.clutcher.comments.settings.CommentHighlighterColorSettingsPage"/>
 
 
-        <applicationService serviceImplementation="com.clutcher.comments.configuration.CommentTokenConfiguration"/>
+        <applicationService serviceImplementation="com.clutcher.comments.configuration.HighlightTokenConfiguration"/>
+
+        <applicationService serviceImplementation="com.clutcher.comments.highlighter.impl.CommentHighlighter"/>
 
         <applicationConfigurable groupId="tools" displayName="Comment Highlighter Settings"
                                  id="settings.CommentHighlighterCustomTokensSettingsPage"
                                  instance="com.clutcher.comments.settings.CommentHighlighterCustomTokensSettingsPage"/>
 
-        <additionalTextAttributes scheme="Default" file="colorSchemes/comments.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/comments.xml"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/highlightTokens.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/highlightTokens.xml"/>
 
     </extensions>
 
