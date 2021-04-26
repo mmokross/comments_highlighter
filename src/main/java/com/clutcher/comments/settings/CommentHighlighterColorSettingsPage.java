@@ -1,7 +1,9 @@
 package com.clutcher.comments.settings;
 
 import com.clutcher.comments.configuration.HighlightTokenConfiguration;
+import com.clutcher.comments.highlighter.TokenHighlighter;
 import com.clutcher.comments.highlighter.impl.CommentHighlighter;
+import com.clutcher.comments.highlighter.impl.KeywordHighlighter;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.PlainSyntaxHighlighter;
@@ -13,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.Icon;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class CommentHighlighterColorSettingsPage implements ColorSettingsPage {
 
@@ -45,20 +47,34 @@ public class CommentHighlighterColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public AttributesDescriptor[] getAttributeDescriptors() {
-        List<String> tokens = ServiceManager.getService(HighlightTokenConfiguration.class).getAllCommentTokens();
-        int size = tokens.size();
+        HighlightTokenConfiguration highlightTokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
+        TokenHighlighter commentHighlighter = ServiceManager.getService(CommentHighlighter.class);
+        TokenHighlighter keywordHighlighter = ServiceManager.getService(KeywordHighlighter.class);
 
-        AttributesDescriptor[] attributesDescriptors = new AttributesDescriptor[size];
-        if (size > 0) {
-            CommentHighlighter commentHighlighter = ServiceManager.getService(CommentHighlighter.class);
-            for (int i = 0; i < size; i++) {
-                String token = tokens.get(i);
-                TextAttributesKey textAttributesKey = TextAttributesKey.createTextAttributesKey(commentHighlighter.getTextAttributeKeyByToken(token));
+        Stream<AttributesDescriptor> commentColorStream = highlightTokenConfiguration.getAllCommentTokens().stream()
+                .map(token -> createAttributeDescriptor(token, commentHighlighter));
 
-                attributesDescriptors[i] = new AttributesDescriptor(token, textAttributesKey);
-            }
+        Stream<AttributesDescriptor> keywordColorStream = highlightTokenConfiguration.getAllKeywordTokens().stream()
+                .map(token -> createAttributeDescriptor(token, keywordHighlighter));
+
+        return Stream.concat(commentColorStream, keywordColorStream).toArray(AttributesDescriptor[]::new);
+    }
+
+    @NotNull
+    private AttributesDescriptor createAttributeDescriptor(String token, TokenHighlighter tokenHighlighter) {
+
+        if (tokenHighlighter instanceof CommentHighlighter) {
+            return new AttributesDescriptor("Comment//" + token, createTextAttributeKey(token, tokenHighlighter));
+        } else if (tokenHighlighter instanceof KeywordHighlighter) {
+            return new AttributesDescriptor("Keyword//" + token, createTextAttributeKey(token, tokenHighlighter));
         }
-        return attributesDescriptors;
+
+        return new AttributesDescriptor("Other//" + token, createTextAttributeKey(token, tokenHighlighter));
+    }
+
+    @NotNull
+    private TextAttributesKey createTextAttributeKey(String token, TokenHighlighter tokenHighlighter) {
+        return TextAttributesKey.createTextAttributesKey(tokenHighlighter.getTextAttributeKeyByToken(token));
     }
 
     @NotNull
@@ -70,6 +86,6 @@ public class CommentHighlighterColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDisplayName() {
-        return "Comments";
+        return "Comments/Keywords";
     }
 }
