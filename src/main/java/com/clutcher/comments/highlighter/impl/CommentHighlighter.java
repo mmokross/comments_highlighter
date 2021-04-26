@@ -1,6 +1,8 @@
 package com.clutcher.comments.highlighter.impl;
 
+import com.clutcher.comments.configuration.CommentTokenConfiguration;
 import com.clutcher.comments.highlighter.TokenHighlighter;
+import com.intellij.openapi.components.Service;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -10,19 +12,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Service
 public class CommentHighlighter implements TokenHighlighter {
 
     private static final String JAVA_DOC_START_LINE = "/**";
     private static final List<Character> START_LINE_CHARACTERS_LIST = Arrays.asList('/', '<', '-', ' ', '#', '*', '!');
 
-    private final List<String> commentTokens;
-    private final String textAttributePostfix;
-
-    public CommentHighlighter(List<String> tokens, String textAttributePostfix) {
-        this.commentTokens = tokens;
-        this.textAttributePostfix = textAttributePostfix.toUpperCase();
-    }
-
+    private final List<String> commentTokens = CommentTokenConfiguration.getInstance().getAllTokens();
 
     @Override
     public List<Pair<TextRange, TextAttributesKey>> getHighlights(String text, int startOffset) {
@@ -143,6 +139,6 @@ public class CommentHighlighter implements TokenHighlighter {
     @NotNull
     @Override
     public String getTextAttributeKeyByToken(String token) {
-        return token + "_" + textAttributePostfix;
+        return token + "_COMMENT";
     }
 }

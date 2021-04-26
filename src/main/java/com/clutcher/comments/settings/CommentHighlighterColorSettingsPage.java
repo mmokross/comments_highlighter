@@ -1,7 +1,8 @@
 package com.clutcher.comments.settings;
 
 import com.clutcher.comments.configuration.CommentTokenConfiguration;
-import com.clutcher.comments.utils.HighlightTextAttributeUtils;
+import com.clutcher.comments.highlighter.impl.CommentHighlighter;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.PlainSyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
@@ -44,13 +45,17 @@ public class CommentHighlighterColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public AttributesDescriptor[] getAttributeDescriptors() {
-        final List<String> tokens = CommentTokenConfiguration.getInstance().getAllTokens();
-        final int size = tokens.size();
+        List<String> tokens = CommentTokenConfiguration.getInstance().getAllTokens();
+        int size = tokens.size();
+
         AttributesDescriptor[] attributesDescriptors = new AttributesDescriptor[size];
         if (size > 0) {
+            CommentHighlighter commentHighlighter = ServiceManager.getService(CommentHighlighter.class);
             for (int i = 0; i < size; i++) {
-                final String token = tokens.get(i);
-                attributesDescriptors[i] = new AttributesDescriptor(token, TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken(token)));
+                String token = tokens.get(i);
+                TextAttributesKey textAttributesKey = TextAttributesKey.createTextAttributesKey(commentHighlighter.getTextAttributeKeyByToken(token));
+
+                attributesDescriptors[i] = new AttributesDescriptor(token, textAttributesKey);
             }
         }
         return attributesDescriptors;
