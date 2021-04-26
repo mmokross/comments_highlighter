@@ -72,6 +72,7 @@
         <applicationService serviceImplementation="com.clutcher.comments.configuration.HighlightTokenConfiguration"/>
 
         <applicationService serviceImplementation="com.clutcher.comments.highlighter.impl.CommentHighlighter"/>
+        <applicationService serviceImplementation="com.clutcher.comments.highlighter.impl.KeywordHighlighter"/>
 
         <applicationConfigurable groupId="tools" displayName="Comment Highlighter Settings"
                                  id="settings.CommentHighlighterCustomTokensSettingsPage"
