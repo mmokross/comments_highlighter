@@ -5,22 +5,36 @@ Plugin to highlight comments. Would work for any language, supported by Intellij
 + Open settings window
 + Tools->Comments Highlighter Settings
 + Click on "+" sign and enter any token in popup. (Third screenshot of plugin)
-+ **Reopen settings window.** This is mandatory step due to [bug in Intellij](https://youtrack.jetbrains.com/issue/IDEA-226087)
++ **Reopen settings window.** This is mandatory step due
+  to [bug in Intellij](https://youtrack.jetbrains.com/issue/IDEA-226087)
 
 ## Implementation notes
+
 General architecture is simple and has 2 main parts:
-+ **CommentHighlighterAnnotator** implements [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator) to deal with PsiComment. In such way plugin is able to handle any language, supported by Intellij IDEA. 
-+ **HighlightTextAttributeUtils** main class to define, what part of comment must be highlighted. Is covered by HighlightTextAttributeUtilsTest. 
+
++ **CommentHighlighterAnnotator**
+  implements [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator)
+  to deal with PsiComment. In such way plugin is able to handle any language, supported by Intellij IDEA.
++ **HighlightTextAttributeUtils** main class to define, what part of comment must be highlighted. Is covered by
+  HighlightTextAttributeUtilsTest.
 
 ## Version history
+
+### 1.3.6
+
++ **(Improvement)** Migrate on java 11 toolchain.
+
 ### 1.3.5
+
 + **(Improvement)** Migrate on non-deprecated api usage.
 + **(Improvement)** Disable until version plugin definition.
 
 ### 1.3.4
+
 + **(Bug Fix)** Fix StringIndexOutOfBoundsException on Rider IDE.
 
 ### 1.3.3
+
 + **(Bug Fix)** Made compatible with EAP builds.
 
 ### 1.3.2
