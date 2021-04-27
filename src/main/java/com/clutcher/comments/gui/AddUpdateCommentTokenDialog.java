@@ -1,6 +1,6 @@
 package com.clutcher.comments.gui;
 
-import com.clutcher.comments.configuration.HighlightTokenConfiguration;
+import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.DocumentAdapter;
@@ -15,7 +15,7 @@ import javax.swing.event.DocumentEvent;
 public class AddUpdateCommentTokenDialog extends DialogWrapper {
 
     private JTextField customTokenInput;
-    private ComboBox<HighlightTokenConfiguration.TokenType> customTokenType;
+    private ComboBox<HighlightTokenType> customTokenType;
 
     protected AddUpdateCommentTokenDialog() {
         super(false);
@@ -28,7 +28,7 @@ public class AddUpdateCommentTokenDialog extends DialogWrapper {
             }
         });
 
-        this.customTokenType = new ComboBox<>(HighlightTokenConfiguration.TokenType.values());
+        this.customTokenType = new ComboBox<>(HighlightTokenType.values());
 
         init();
     }
@@ -46,12 +46,12 @@ public class AddUpdateCommentTokenDialog extends DialogWrapper {
         return jPanel;
     }
 
-    public HighlightTokenConfiguration.TokenType getCustomTokenType() {
+    public HighlightTokenType getCustomTokenType() {
         return customTokenType.getItem();
     }
 
-    public void setCustomTokenType(HighlightTokenConfiguration.TokenType tokenType) {
-        customTokenType.setItem(tokenType);
+    public void setCustomTokenType(HighlightTokenType highlightTokenType) {
+        customTokenType.setItem(highlightTokenType);
     }
 
     public String getToken() {

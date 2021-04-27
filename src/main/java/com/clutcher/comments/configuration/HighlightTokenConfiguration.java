@@ -1,5 +1,6 @@
 package com.clutcher.comments.configuration;
 
+import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
@@ -21,16 +22,14 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
 
     State currentState;
 
-    public enum TokenType {COMMENT, KEYWORD}
-
     static class State {
-        public Map<TokenType, List<String>> customHighlightTokenMap;
+        public Map<HighlightTokenType, List<String>> customHighlightTokenMap;
     }
 
     public List<String> getAllKeywordTokens() {
         final ArrayList<String> tokens = new ArrayList<>(DEFAULT_KEYWORD_TOKENS);
 
-        List<String> customKeywordTokens = currentState.customHighlightTokenMap.get(TokenType.KEYWORD);
+        List<String> customKeywordTokens = currentState.customHighlightTokenMap.get(HighlightTokenType.KEYWORD);
         if (customKeywordTokens != null) {
             tokens.addAll(customKeywordTokens);
         }
@@ -38,7 +37,7 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
     }
 
     public List<String> getCustomKeywordTokens() {
-        List<String> customTokens = currentState.customHighlightTokenMap.get(TokenType.KEYWORD);
+        List<String> customTokens = currentState.customHighlightTokenMap.get(HighlightTokenType.KEYWORD);
         if (customTokens == null) {
             return Collections.emptyList();
         }
@@ -48,7 +47,7 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
     public List<String> getAllCommentTokens() {
         final ArrayList<String> tokens = new ArrayList<>(DEFAULT_COMMENT_TOKENS);
 
-        List<String> customCommentTokens = currentState.customHighlightTokenMap.get(TokenType.COMMENT);
+        List<String> customCommentTokens = currentState.customHighlightTokenMap.get(HighlightTokenType.COMMENT);
         if (customCommentTokens != null) {
             tokens.addAll(customCommentTokens);
         }
@@ -56,7 +55,7 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
     }
 
     public List<String> getCustomCommentTokens() {
-        List<String> customTokens = currentState.customHighlightTokenMap.get(TokenType.COMMENT);
+        List<String> customTokens = currentState.customHighlightTokenMap.get(HighlightTokenType.COMMENT);
         if (customTokens == null) {
             return Collections.emptyList();
         }
@@ -64,11 +63,11 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
     }
 
     public void setCustomCommentTokens(final List<String> tokens) {
-        currentState.customHighlightTokenMap.put(TokenType.COMMENT, new ArrayList<>(tokens));
+        currentState.customHighlightTokenMap.put(HighlightTokenType.COMMENT, new ArrayList<>(tokens));
     }
 
     public void setCustomKeywordTokens(final List<String> tokens) {
-        currentState.customHighlightTokenMap.put(TokenType.KEYWORD, new ArrayList<>(tokens));
+        currentState.customHighlightTokenMap.put(HighlightTokenType.KEYWORD, new ArrayList<>(tokens));
     }
 
     @Override
@@ -83,9 +82,9 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
 
     @Override
     public void noStateLoaded() {
-        Map<TokenType, List<String>> initialHighlightMap = new HashMap<>();
-        initialHighlightMap.put(TokenType.COMMENT, new ArrayList<>());
-        initialHighlightMap.put(TokenType.KEYWORD, new ArrayList<>());
+        Map<HighlightTokenType, List<String>> initialHighlightMap = new HashMap<>();
+        initialHighlightMap.put(HighlightTokenType.COMMENT, new ArrayList<>());
+        initialHighlightMap.put(HighlightTokenType.KEYWORD, new ArrayList<>());
 
         currentState = new State();
         currentState.customHighlightTokenMap = initialHighlightMap;

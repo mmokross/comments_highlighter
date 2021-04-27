@@ -1,6 +1,7 @@
 package com.clutcher.comments.gui;
 
 import com.clutcher.comments.configuration.HighlightTokenConfiguration;
+import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.intellij.CommonBundle;
 import com.intellij.openapi.application.ApplicationBundle;
 import com.intellij.openapi.components.ServiceManager;
@@ -31,17 +32,17 @@ import java.util.Map;
 
 public class CommentTokensConfigurationPanel extends JPanel implements SearchableConfigurable, Configurable.NoScroll {
     private final JBTable tokenTable;
-    private ListTableModel<Pair<HighlightTokenConfiguration.TokenType, String>> tableModel;
+    private ListTableModel<Pair<HighlightTokenType, String>> tableModel;
 
-    private static final ColumnInfo<Pair<HighlightTokenConfiguration.TokenType, String>, String> TYPE_COLUMN = new ColumnInfo<Pair<HighlightTokenConfiguration.TokenType, String>, String>("Type") {
+    private static final ColumnInfo<Pair<HighlightTokenType, String>, String> TYPE_COLUMN = new ColumnInfo<Pair<HighlightTokenType, String>, String>("Type") {
         @Override
-        public @Nullable String valueOf(Pair<HighlightTokenConfiguration.TokenType, String> tokenTypeStringPair) {
+        public @Nullable String valueOf(Pair<HighlightTokenType, String> tokenTypeStringPair) {
             return tokenTypeStringPair.first.toString();
         }
     };
-    private static final ColumnInfo<Pair<HighlightTokenConfiguration.TokenType, String>, String> NAME_COLUMN = new ColumnInfo<Pair<HighlightTokenConfiguration.TokenType, String>, String>("Token") {
+    private static final ColumnInfo<Pair<HighlightTokenType, String>, String> NAME_COLUMN = new ColumnInfo<Pair<HighlightTokenType, String>, String>("Token") {
         @Override
-        public @Nullable String valueOf(Pair<HighlightTokenConfiguration.TokenType, String> tokenTypeStringPair) {
+        public @Nullable String valueOf(Pair<HighlightTokenType, String> tokenTypeStringPair) {
             return tokenTypeStringPair.second;
         }
     };
@@ -68,10 +69,10 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
                             AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
                             dlg.setTitle("Add comment token");
                             if (dlg.showAndGet()) {
-                                HighlightTokenConfiguration.TokenType tokenType = dlg.getCustomTokenType();
+                                HighlightTokenType highlightTokenType = dlg.getCustomTokenType();
                                 String tokenValue = dlg.getToken();
 
-                                tableModel.addRow(Pair.create(tokenType, tokenValue));
+                                tableModel.addRow(Pair.create(highlightTokenType, tokenValue));
                             }
                         })
                         .setRemoveAction(button -> {
@@ -86,7 +87,7 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
                         })
                         .setEditAction(button -> {
                             int selectedRow = tokenTable.getSelectedRow();
-                            Pair<HighlightTokenConfiguration.TokenType, String> value = tableModel.getItem(selectedRow);
+                            Pair<HighlightTokenType, String> value = tableModel.getItem(selectedRow);
 
                             AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
                             dlg.setTitle("Edit comment token");
@@ -94,11 +95,11 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
                             dlg.setToken(value.second);
 
                             if (dlg.showAndGet()) {
-                                final HighlightTokenConfiguration.TokenType editedTokenType = dlg.getCustomTokenType();
+                                final HighlightTokenType editedHighlightTokenType = dlg.getCustomTokenType();
                                 final String editedToken = dlg.getToken();
 
                                 tableModel.removeRow(selectedRow);
-                                tableModel.insertRow(selectedRow, Pair.create(editedTokenType, editedToken));
+                                tableModel.insertRow(selectedRow, Pair.create(editedHighlightTokenType, editedToken));
                             }
                         })
                         .setButtonComparator("Add", "Edit", "Remove")
@@ -112,11 +113,11 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
     public void apply() {
         add(reopenLabel, BorderLayout.SOUTH);
 
-        Map<HighlightTokenConfiguration.TokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
+        Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
 
         HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
-        tokenConfiguration.setCustomCommentTokens(updatedTokens.get(HighlightTokenConfiguration.TokenType.COMMENT));
-        tokenConfiguration.setCustomKeywordTokens(updatedTokens.get(HighlightTokenConfiguration.TokenType.KEYWORD));
+        tokenConfiguration.setCustomCommentTokens(updatedTokens.get(HighlightTokenType.COMMENT));
+        tokenConfiguration.setCustomKeywordTokens(updatedTokens.get(HighlightTokenType.KEYWORD));
 
 
     }
@@ -128,10 +129,10 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
         List<String> customCommentTokens = tokenConfiguration.getCustomCommentTokens();
         List<String> customKeywordTokens = tokenConfiguration.getCustomKeywordTokens();
 
-        Map<HighlightTokenConfiguration.TokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
+        Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
 
-        return !customCommentTokens.equals(updatedTokens.get(HighlightTokenConfiguration.TokenType.COMMENT)) ||
-                !customKeywordTokens.equals(updatedTokens.get(HighlightTokenConfiguration.TokenType.KEYWORD));
+        return !customCommentTokens.equals(updatedTokens.get(HighlightTokenType.COMMENT)) ||
+                !customKeywordTokens.equals(updatedTokens.get(HighlightTokenType.KEYWORD));
     }
 
 
@@ -141,22 +142,22 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
 
         List<String> customCommentTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getCustomCommentTokens();
         for (String commentToken : customCommentTokens) {
-            tableModel.addRow(Pair.create(HighlightTokenConfiguration.TokenType.COMMENT, commentToken));
+            tableModel.addRow(Pair.create(HighlightTokenType.COMMENT, commentToken));
         }
 
         List<String> customKeywordTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getCustomKeywordTokens();
         for (String keywordToken : customKeywordTokens) {
-            tableModel.addRow(Pair.create(HighlightTokenConfiguration.TokenType.KEYWORD, keywordToken));
+            tableModel.addRow(Pair.create(HighlightTokenType.KEYWORD, keywordToken));
         }
         tokenTable.setModel(tableModel);
     }
 
-    private Map<HighlightTokenConfiguration.TokenType, List<String>> getTokenMapFromModel(ListTableModel<Pair<HighlightTokenConfiguration.TokenType, String>> tableModel) {
-        Map<HighlightTokenConfiguration.TokenType, List<String>> tokenMap = new EnumMap<>(HighlightTokenConfiguration.TokenType.class);
-        tokenMap.put(HighlightTokenConfiguration.TokenType.COMMENT, new ArrayList<>());
-        tokenMap.put(HighlightTokenConfiguration.TokenType.KEYWORD, new ArrayList<>());
+    private Map<HighlightTokenType, List<String>> getTokenMapFromModel(ListTableModel<Pair<HighlightTokenType, String>> tableModel) {
+        Map<HighlightTokenType, List<String>> tokenMap = new EnumMap<>(HighlightTokenType.class);
+        tokenMap.put(HighlightTokenType.COMMENT, new ArrayList<>());
+        tokenMap.put(HighlightTokenType.KEYWORD, new ArrayList<>());
 
-        for (Pair<HighlightTokenConfiguration.TokenType, String> item : tableModel.getItems()) {
+        for (Pair<HighlightTokenType, String> item : tableModel.getItems()) {
             List<String> mapValueList = tokenMap.get(item.first);
             mapValueList.add(item.second);
         }
