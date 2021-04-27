@@ -37,6 +37,14 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
         return tokens;
     }
 
+    public List<String> getCustomKeywordTokens() {
+        List<String> customTokens = currentState.customHighlightTokenMap.get(TokenType.KEYWORD);
+        if (customTokens == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(customTokens);
+    }
+
     public List<String> getAllCommentTokens() {
         final ArrayList<String> tokens = new ArrayList<>(DEFAULT_COMMENT_TOKENS);
 
@@ -52,7 +60,7 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
         if (customTokens == null) {
             return Collections.emptyList();
         }
-        return customTokens;
+        return new ArrayList<>(customTokens);
     }
 
     public void setCustomCommentTokens(final List<String> tokens) {
