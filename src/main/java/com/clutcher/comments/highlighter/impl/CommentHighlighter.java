@@ -1,6 +1,7 @@
 package com.clutcher.comments.highlighter.impl;
 
 import com.clutcher.comments.configuration.HighlightTokenConfiguration;
+import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.clutcher.comments.highlighter.TokenHighlighter;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.ServiceManager;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -142,5 +144,10 @@ public class CommentHighlighter implements TokenHighlighter {
     @Override
     public String getTextAttributeKeyByToken(String token) {
         return token + "_COMMENT";
+    }
+
+    @Override
+    public List<HighlightTokenType> getSupportedTokenTypes() {
+        return Collections.singletonList(HighlightTokenType.COMMENT);
     }
 }

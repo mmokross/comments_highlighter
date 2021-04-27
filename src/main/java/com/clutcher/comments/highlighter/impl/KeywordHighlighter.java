@@ -37,4 +37,9 @@ public class KeywordHighlighter implements TokenHighlighter {
     public String getTextAttributeKeyByToken(String token) {
         return token + "_KEYWORD";
     }
+
+    @Override
+    public List<HighlightTokenType> getSupportedTokenTypes() {
+        return Collections.singletonList(HighlightTokenType.KEYWORD);
+    }
 }

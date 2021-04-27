@@ -13,4 +13,6 @@ public interface TokenHighlighter {
 
     @NotNull
     String getTextAttributeKeyByToken(String token);
+
+    List<HighlightTokenType> getSupportedTokenTypes();
 }
