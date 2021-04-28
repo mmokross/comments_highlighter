@@ -15,11 +15,14 @@ possibility to define custom user tokens for commented line highlighting.
 
 General architecture is simple and has 2 main parts:
 
-+ **CommentHighlighterAnnotator**
-  implements [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator)
-  to deal with PsiComment. In such way plugin is able to handle any language, supported by Intellij IDEA.
-+ **HighlightTextAttributeUtils** main class to define, what part of comment must be highlighted. Is covered by
-  HighlightTextAttributeUtilsTest.
++ Annotators:
+  + **CommentHighlighterAnnotator**
+    implements [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator)
+    to deal with PsiComment. In such way plugin is able to handle any language, supported by Intellij IDEA.
+  + **KeywordHighlighterAnnotator** language specific annotator to highlight keywords of desired language.
++ Highlighters:
+  + **CommentHighlighter** main class to define, what part of comment must be highlighted.
+  + **KeywordHighlighter** main class to define, what keywords must be highlighted.
 
 ## Version history
 
