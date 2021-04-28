@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class CommentHighlighter implements TokenHighlighter {
 
     @Override
     public List<Pair<TextRange, TextAttributesKey>> getHighlights(String text, int startOffset) {
+
+        Collection<String> supportedTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getAllTokensByType(getSupportedTokenTypes());
+
         // General comment data
         final int commentLength = text.length();
         final int lastCharPosition = text.length() - 1;
@@ -67,10 +71,10 @@ public class CommentHighlighter implements TokenHighlighter {
             }
 
             // Create highlight if current char is valid highlight char
-            if (isValidPosition(text, i) && isHighlightTriggerChar(c) && containsHighlightToken(text.substring(i))) {
+            if (isValidPosition(text, i) && isHighlightTriggerChar(c, supportedTokens) && containsHighlightToken(text.substring(i), supportedTokens)) {
                 isHighlightedCurrentLine = true;
                 isProcessedCurrentLine = true;
-                currentLineHighlightAttribute = getHighlightTextAttribute(text.substring(i));
+                currentLineHighlightAttribute = getHighlightTextAttribute(text.substring(i), supportedTokens);
             }
 
             // Check that line highlight was defined and no more processing needs
@@ -108,9 +112,8 @@ public class CommentHighlighter implements TokenHighlighter {
         return START_LINE_CHARACTERS_LIST.contains(c);
     }
 
-    private boolean isHighlightTriggerChar(char c) {
-        List<String> allCommentTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getAllCommentTokens();
-        for (String token : allCommentTokens) {
+    private boolean isHighlightTriggerChar(char c, Collection<String> supportedTokens) {
+        for (String token : supportedTokens) {
             if (token.charAt(0) == c) {
                 return true;
             }
@@ -119,9 +122,8 @@ public class CommentHighlighter implements TokenHighlighter {
         return false;
     }
 
-    private boolean containsHighlightToken(String commentSubstring) {
-        List<String> allCommentTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getAllCommentTokens();
-        for (String token : allCommentTokens) {
+    private boolean containsHighlightToken(String commentSubstring, Collection<String> supportedTokens) {
+        for (String token : supportedTokens) {
             if (commentSubstring.startsWith(token)) {
                 return true;
             }
@@ -130,9 +132,8 @@ public class CommentHighlighter implements TokenHighlighter {
     }
 
 
-    private TextAttributesKey getHighlightTextAttribute(String commentSubstring) {
-        List<String> allCommentTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getAllCommentTokens();
-        for (String token : allCommentTokens) {
+    private TextAttributesKey getHighlightTextAttribute(String commentSubstring, Collection<String> supportedTokens) {
+        for (String token : supportedTokens) {
             if (commentSubstring.startsWith(token)) {
                 return TextAttributesKey.createTextAttributesKey(getTextAttributeKeyByToken(token));
             }

@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -116,23 +117,24 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
         Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
 
         HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
-        tokenConfiguration.setCustomCommentTokens(updatedTokens.get(HighlightTokenType.COMMENT));
-        tokenConfiguration.setCustomKeywordTokens(updatedTokens.get(HighlightTokenType.KEYWORD));
-
-
+        tokenConfiguration.setCustomTokens(updatedTokens);
     }
 
     @Override
     public boolean isModified() {
 
         HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
-        List<String> customCommentTokens = tokenConfiguration.getCustomCommentTokens();
-        List<String> customKeywordTokens = tokenConfiguration.getCustomKeywordTokens();
 
         Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
+        Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getCustomTokens();
 
-        return !customCommentTokens.equals(updatedTokens.get(HighlightTokenType.COMMENT)) ||
-                !customKeywordTokens.equals(updatedTokens.get(HighlightTokenType.KEYWORD));
+        for (HighlightTokenType value : HighlightTokenType.values()) {
+            if (!updatedTokens.get(value).equals(allTokens.get(value))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -140,22 +142,24 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
     public void reset() {
         tableModel = new ListTableModel<>(TYPE_COLUMN, NAME_COLUMN);
 
-        List<String> customCommentTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getCustomCommentTokens();
-        for (String commentToken : customCommentTokens) {
-            tableModel.addRow(Pair.create(HighlightTokenType.COMMENT, commentToken));
+        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
+        Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getCustomTokens();
+
+        for (Map.Entry<HighlightTokenType, Collection<String>> entry : allTokens.entrySet()) {
+            HighlightTokenType tokenType = entry.getKey();
+            for (String token : entry.getValue()) {
+                tableModel.addRow(Pair.create(tokenType, token));
+            }
         }
 
-        List<String> customKeywordTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getCustomKeywordTokens();
-        for (String keywordToken : customKeywordTokens) {
-            tableModel.addRow(Pair.create(HighlightTokenType.KEYWORD, keywordToken));
-        }
         tokenTable.setModel(tableModel);
     }
 
     private Map<HighlightTokenType, List<String>> getTokenMapFromModel(ListTableModel<Pair<HighlightTokenType, String>> tableModel) {
         Map<HighlightTokenType, List<String>> tokenMap = new EnumMap<>(HighlightTokenType.class);
-        tokenMap.put(HighlightTokenType.COMMENT, new ArrayList<>());
-        tokenMap.put(HighlightTokenType.KEYWORD, new ArrayList<>());
+        for (HighlightTokenType value : HighlightTokenType.values()) {
+            tokenMap.put(value, new ArrayList<>());
+        }
 
         for (Pair<HighlightTokenType, String> item : tableModel.getItems()) {
             List<String> mapValueList = tokenMap.get(item.first);
