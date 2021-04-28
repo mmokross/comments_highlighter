@@ -1,11 +1,14 @@
 package com.clutcher.comments.gui;
 
-import com.clutcher.comments.configuration.CommentTokenConfiguration;
+import com.clutcher.comments.configuration.HighlightTokenConfiguration;
+import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.intellij.CommonBundle;
 import com.intellij.openapi.application.ApplicationBundle;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.Pair;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.UIBundle;
@@ -15,24 +18,33 @@ import com.intellij.util.ui.ListTableModel;
 import com.intellij.xml.util.XmlStringUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class CommentTokensConfigurationPanel extends JPanel implements SearchableConfigurable, Configurable.NoScroll {
-    private final JBTable myTokenTable;
-    private List<String> myTokens;
-    private ListTableModel<String> myModel;
+    private final JBTable tokenTable;
+    private ListTableModel<Pair<HighlightTokenType, String>> tableModel;
 
-    private static final ColumnInfo<String, String> NAME_COLUMN = new ColumnInfo<String, String>("Token") {
+    private static final ColumnInfo<Pair<HighlightTokenType, String>, String> TYPE_COLUMN = new ColumnInfo<Pair<HighlightTokenType, String>, String>("Type") {
         @Override
-        public String valueOf(String token) {
-            return token;
+        public @Nullable String valueOf(Pair<HighlightTokenType, String> tokenTypeStringPair) {
+            return tokenTypeStringPair.first.toString();
+        }
+    };
+    private static final ColumnInfo<Pair<HighlightTokenType, String>, String> NAME_COLUMN = new ColumnInfo<Pair<HighlightTokenType, String>, String>("Token") {
+        @Override
+        public @Nullable String valueOf(Pair<HighlightTokenType, String> tokenTypeStringPair) {
+            return tokenTypeStringPair.second;
         }
     };
 
@@ -44,22 +56,24 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
         reopenLabel = new JLabel(XmlStringUtil.wrapInHtml("Reopen setting window to see new tokens on Color settings page (https://youtrack.jetbrains.com/issue/IDEA-226087)"));
         reopenLabel.setForeground(JBColor.RED);
 
-        myTokenTable = new JBTable();
-        myTokenTable.getEmptyText().setText("No tokens defined");
+        tokenTable = new JBTable();
+        tokenTable.getEmptyText().setText("No tokens defined");
         reset();
         add(
-                new JLabel(XmlStringUtil.wrapInHtml("Custom comment tokens would be used to highlight comments based on color settings")),
+                new JLabel(XmlStringUtil.wrapInHtml("Custom comment/keyword tokens would be used to highlight comments/keywords based on color settings")),
                 BorderLayout.NORTH
         );
 
         add(
-                ToolbarDecorator.createDecorator(myTokenTable)
+                ToolbarDecorator.createDecorator(tokenTable)
                         .setAddAction(button -> {
                             AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
                             dlg.setTitle("Add comment token");
                             if (dlg.showAndGet()) {
-                                myTokens.add(dlg.getToken());
-                                myModel.fireTableDataChanged();
+                                HighlightTokenType highlightTokenType = dlg.getCustomTokenType();
+                                String tokenValue = dlg.getToken();
+
+                                tableModel.addRow(Pair.create(highlightTokenType, tokenValue));
                             }
                         })
                         .setRemoveAction(button -> {
@@ -69,27 +83,24 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
                                     CommonBundle.getCancelButtonText(),
                                     Messages.getQuestionIcon());
                             if (returnValue == Messages.OK) {
-                                int selRow = myTokenTable.getSelectedRow();
-                                myTokens.remove(selRow);
-                                myModel.fireTableDataChanged();
-                                if (myTokenTable.getRowCount() > 0) {
-                                    if (selRow >= myTokenTable.getRowCount()) {
-                                        selRow--;
-                                    }
-                                    myTokenTable.getSelectionModel().setSelectionInterval(selRow, selRow);
-                                }
+                                tableModel.removeRow(tokenTable.getSelectedRow());
                             }
                         })
                         .setEditAction(button -> {
-                            String token = myModel.getItem(myTokenTable.getSelectedRow());
+                            int selectedRow = tokenTable.getSelectedRow();
+                            Pair<HighlightTokenType, String> value = tableModel.getItem(selectedRow);
+
                             AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
                             dlg.setTitle("Edit comment token");
-                            dlg.setToken(token);
+                            dlg.setCustomTokenType(value.first);
+                            dlg.setToken(value.second);
+
                             if (dlg.showAndGet()) {
+                                final HighlightTokenType editedHighlightTokenType = dlg.getCustomTokenType();
                                 final String editedToken = dlg.getToken();
-                                myTokens.remove(token);
-                                myTokens.add(editedToken);
-                                myModel.fireTableDataChanged();
+
+                                tableModel.removeRow(selectedRow);
+                                tableModel.insertRow(selectedRow, Pair.create(editedHighlightTokenType, editedToken));
                             }
                         })
                         .setButtonComparator("Add", "Edit", "Remove")
@@ -102,25 +113,66 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
     @Override
     public void apply() {
         add(reopenLabel, BorderLayout.SOUTH);
-        CommentTokenConfiguration.getInstance().setCustomTokens(myTokens);
+
+        Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
+
+        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
+        tokenConfiguration.setCustomTokens(updatedTokens);
     }
 
     @Override
     public boolean isModified() {
-        return !myTokens.equals(CommentTokenConfiguration.getInstance().getCustomTokens());
+
+        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
+
+        Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
+        Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getCustomTokens();
+
+        for (HighlightTokenType value : HighlightTokenType.values()) {
+            if (!updatedTokens.get(value).equals(allTokens.get(value))) {
+                return true;
+            }
+        }
+
+        return false;
     }
+
 
     @Override
     public void reset() {
-        myTokens = new ArrayList<>(CommentTokenConfiguration.getInstance().getCustomTokens());
-        myModel = new ListTableModel<>(new ColumnInfo[]{NAME_COLUMN,}, myTokens, 0);
-        myTokenTable.setModel(myModel);
+        tableModel = new ListTableModel<>(TYPE_COLUMN, NAME_COLUMN);
+
+        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
+        Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getCustomTokens();
+
+        for (Map.Entry<HighlightTokenType, Collection<String>> entry : allTokens.entrySet()) {
+            HighlightTokenType tokenType = entry.getKey();
+            for (String token : entry.getValue()) {
+                tableModel.addRow(Pair.create(tokenType, token));
+            }
+        }
+
+        tokenTable.setModel(tableModel);
+    }
+
+    private Map<HighlightTokenType, List<String>> getTokenMapFromModel(ListTableModel<Pair<HighlightTokenType, String>> tableModel) {
+        Map<HighlightTokenType, List<String>> tokenMap = new EnumMap<>(HighlightTokenType.class);
+        for (HighlightTokenType value : HighlightTokenType.values()) {
+            tokenMap.put(value, new ArrayList<>());
+        }
+
+        for (Pair<HighlightTokenType, String> item : tableModel.getItems()) {
+            List<String> mapValueList = tokenMap.get(item.first);
+            mapValueList.add(item.second);
+        }
+
+        return tokenMap;
     }
 
     @Override
     @Nls
     public String getDisplayName() {
-        return "Custom comment tokens";
+        return "Custom comment/keyword tokens";
     }
 
     @Override

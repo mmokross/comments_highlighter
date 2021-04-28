@@ -15,4 +15,10 @@
             <option name="FOREGROUND" value="CC666E"/>
         </value>
     </option>
+    <option name="public_KEYWORD">
+        <value>
+            <option name="FOREGROUND" value="FABD2F"/>
+            <!--            CCA266 -->
+        </value>
+    </option>
 </list>

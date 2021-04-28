@@ -1,5 +1,8 @@
 # Comments Highlighter
-Plugin to highlight comments. Would work for any language, supported by Intellij. Allows to define custom user tokens.
+
+This plugin allows creating custom highlighting of commented lines on any language. It is possible to add custom
+highlight of language keywords in method signatures in Java (for example, highlight "public" keyword). Plugin has
+possibility to define custom user tokens for commented line highlighting.
 
 ## How to add custom tokens
 + Open settings window
@@ -19,6 +22,12 @@ General architecture is simple and has 2 main parts:
   HighlightTextAttributeUtilsTest.
 
 ## Version history
+
+### 2.0
+
++ **(Feature)** Add possibility to create custom highlighting for java keyword.
++ **(Feature)** Add default highlight for public keyword.
++ **(Improvement)** Migrate on newest gradle.
 
 ### 1.3.6
 

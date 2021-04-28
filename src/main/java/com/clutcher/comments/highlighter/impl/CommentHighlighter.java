@@ -1,45 +1,56 @@
-package com.clutcher.comments.utils;
+package com.clutcher.comments.highlighter.impl;
 
-import com.clutcher.comments.configuration.CommentTokenConfiguration;
+import com.clutcher.comments.configuration.HighlightTokenConfiguration;
+import com.clutcher.comments.highlighter.HighlightTokenType;
+import com.clutcher.comments.highlighter.TokenHighlighter;
+import com.intellij.openapi.components.Service;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-public class HighlightTextAttributeUtils {
+@Service
+public class CommentHighlighter implements TokenHighlighter {
 
-    private HighlightTextAttributeUtils() {
-    }
-
+    private static final String JAVA_DOC_START_LINE = "/**";
     private static final List<Character> START_LINE_CHARACTERS_LIST = Arrays.asList('/', '<', '-', ' ', '#', '*', '!');
 
-    public static Map<TextRange, TextAttributesKey> getCommentHighlights(String comment, int startOffset) {
+    @Override
+    public List<Pair<TextRange, TextAttributesKey>> getHighlights(String text, int startOffset) {
+
+        Collection<String> supportedTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getAllTokensByType(getSupportedTokenTypes());
+
         // General comment data
-        final int commentLength = comment.length();
-        final int lastCharPosition = comment.length() - 1;
-        final boolean isDocComment = comment.startsWith("/**");
+        final int commentLength = text.length();
+        final int lastCharPosition = text.length() - 1;
+        final boolean isDocComment = text.startsWith(JAVA_DOC_START_LINE);
 
         // Variables to process current line highlighting
+        // ? Move into separate DTO object? Will it decrease performance?
         int currentLineStartIndex = startOffset;
         boolean isProcessedCurrentLine = false;
         boolean isHighlightedCurrentLine = false;
         boolean isSkippedFirstStarCharInDocComment = false;
         TextAttributesKey currentLineHighlightAttribute = null;
 
-        // Result map from which annotation would be created
-        Map<TextRange, TextAttributesKey> highlightAnnotationData = new HashMap<>();
+        // Result list of pairs from which annotation would be created
+        List<Pair<TextRange, TextAttributesKey>> highlightAnnotationData = new ArrayList<>();
 
         // Code is a little bit crappy, but has better performance
         for (int i = 0; i < commentLength; i++) {
-            char c = comment.charAt(i);
+            char c = text.charAt(i);
             // Reset attributes and create highlight on line end
             if (c == '\n' || i == lastCharPosition) {
                 if (isHighlightedCurrentLine) {
-                    highlightAnnotationData.put(new TextRange(currentLineStartIndex, startOffset + i + 1), currentLineHighlightAttribute);
+                    TextRange textRange = new TextRange(currentLineStartIndex, startOffset + i + 1);
+                    highlightAnnotationData.add(Pair.create(textRange, currentLineHighlightAttribute));
                 }
                 currentLineStartIndex = startOffset + i + 1;
                 isHighlightedCurrentLine = false;
@@ -60,10 +71,10 @@ public class HighlightTextAttributeUtils {
             }
 
             // Create highlight if current char is valid highlight char
-            if (isValidPosition(comment, i) && isHighlightTriggerChar(c) && containsHighlightToken(comment.substring(i))) {
+            if (isValidPosition(text, i) && isHighlightTriggerChar(c, supportedTokens) && containsHighlightToken(text.substring(i), supportedTokens)) {
                 isHighlightedCurrentLine = true;
                 isProcessedCurrentLine = true;
-                currentLineHighlightAttribute = getHighlightTextAttribute(comment.substring(i));
+                currentLineHighlightAttribute = getHighlightTextAttribute(text.substring(i), supportedTokens);
             }
 
             // Check that line highlight was defined and no more processing needs
@@ -74,12 +85,12 @@ public class HighlightTextAttributeUtils {
         return highlightAnnotationData;
     }
 
-    private static boolean shouldSkipFistStarInDocComment(char c, boolean isDocComment) {
+    private boolean shouldSkipFistStarInDocComment(char c, boolean isDocComment) {
         return isDocComment && c == '*';
     }
 
 
-    private static boolean isValidPosition(String comment, int i) {
+    private boolean isValidPosition(String comment, int i) {
         char c = comment.charAt(i);
         // Length and i checks is used to not fall in StringIndexOutOfBoundsException
         if (i > 0) {
@@ -97,13 +108,12 @@ public class HighlightTextAttributeUtils {
         return true;
     }
 
-    private static boolean isValidStartLineChar(char c) {
+    private boolean isValidStartLineChar(char c) {
         return START_LINE_CHARACTERS_LIST.contains(c);
     }
 
-    private static boolean isHighlightTriggerChar(char c) {
-        final List<String> allCommentTokens = CommentTokenConfiguration.getInstance().getAllTokens();
-        for (String token : allCommentTokens) {
+    private boolean isHighlightTriggerChar(char c, Collection<String> supportedTokens) {
+        for (String token : supportedTokens) {
             if (token.charAt(0) == c) {
                 return true;
             }
@@ -112,9 +122,8 @@ public class HighlightTextAttributeUtils {
         return false;
     }
 
-    private static boolean containsHighlightToken(String commentSubstring) {
-        final List<String> allCommentTokens = CommentTokenConfiguration.getInstance().getAllTokens();
-        for (String token : allCommentTokens) {
+    private boolean containsHighlightToken(String commentSubstring, Collection<String> supportedTokens) {
+        for (String token : supportedTokens) {
             if (commentSubstring.startsWith(token)) {
                 return true;
             }
@@ -123,9 +132,8 @@ public class HighlightTextAttributeUtils {
     }
 
 
-    private static TextAttributesKey getHighlightTextAttribute(String commentSubstring) {
-        final List<String> allCommentTokens = CommentTokenConfiguration.getInstance().getAllTokens();
-        for (String token : allCommentTokens) {
+    private TextAttributesKey getHighlightTextAttribute(String commentSubstring, Collection<String> supportedTokens) {
+        for (String token : supportedTokens) {
             if (commentSubstring.startsWith(token)) {
                 return TextAttributesKey.createTextAttributesKey(getTextAttributeKeyByToken(token));
             }
@@ -134,7 +142,13 @@ public class HighlightTextAttributeUtils {
     }
 
     @NotNull
-    public static String getTextAttributeKeyByToken(String token) {
+    @Override
+    public String getTextAttributeKeyByToken(String token) {
         return token + "_COMMENT";
+    }
+
+    @Override
+    public List<HighlightTokenType> getSupportedTokenTypes() {
+        return Collections.singletonList(HighlightTokenType.COMMENT);
     }
 }

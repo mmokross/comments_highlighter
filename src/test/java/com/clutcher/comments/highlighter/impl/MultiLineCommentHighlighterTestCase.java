@@ -1,6 +1,7 @@
-package com.clutcher.comments.utils;
+package com.clutcher.comments.highlighter.impl;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.testFramework.LightPlatformTestCase;
 import com.intellij.testFramework.TestApplicationManager;
@@ -9,23 +10,30 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Tests for multiline comments
  */
 @RunWith(JUnit4.class)
-public class MultiLineCommentHighlightTextAttributeUtilsTestCase extends LightPlatformTestCase {
+public class MultiLineCommentHighlighterTestCase extends LightPlatformTestCase {
 
-    private static final TextAttributesKey INFO_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("*"));
-    private static final TextAttributesKey WARN_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("?"));
-    private static final TextAttributesKey ERROR_COMMENT = TextAttributesKey.createTextAttributesKey(HighlightTextAttributeUtils.getTextAttributeKeyByToken("!"));
+    private static final TextAttributesKey INFO_COMMENT = TextAttributesKey.createTextAttributesKey("*_COMMENT");
+    private static final TextAttributesKey WARN_COMMENT = TextAttributesKey.createTextAttributesKey("?_COMMENT");
+    private static final TextAttributesKey ERROR_COMMENT = TextAttributesKey.createTextAttributesKey("!_COMMENT");
+
+    @InjectMocks
+    private CommentHighlighter commentHighlighter;
 
     @Before
     public void testSetup() {
+        MockitoAnnotations.openMocks(this);
+
         TestApplicationManager testApplicationManager = getApplication();
-        Assert.assertNotNull("ServiceManager is not available for CommentTokenConfiguration.class.", testApplicationManager);
+        Assert.assertNotNull("ServiceManager is not available for HighlightTokenConfiguration.class.", testApplicationManager);
     }
 
     @Test
@@ -36,11 +44,11 @@ public class MultiLineCommentHighlightTextAttributeUtilsTestCase extends LightPl
                 "*/";
 
         // when
-        Map<TextRange, TextAttributesKey> highlights = HighlightTextAttributeUtils.getCommentHighlights(comment, 0);
+        List<Pair<TextRange, TextAttributesKey>> highlights = commentHighlighter.getHighlights(comment, 0);
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", INFO_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", INFO_COMMENT, highlights.get(0).second);
     }
 
     @Test
@@ -51,11 +59,11 @@ public class MultiLineCommentHighlightTextAttributeUtilsTestCase extends LightPl
                 "*/";
 
         // when
-        Map<TextRange, TextAttributesKey> highlights = HighlightTextAttributeUtils.getCommentHighlights(comment, 0);
+        List<Pair<TextRange, TextAttributesKey>> highlights = commentHighlighter.getHighlights(comment, 0);
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", WARN_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", WARN_COMMENT, highlights.get(0).second);
     }
 
 
@@ -67,11 +75,11 @@ public class MultiLineCommentHighlightTextAttributeUtilsTestCase extends LightPl
                 "*/";
 
         // when
-        Map<TextRange, TextAttributesKey> highlights = HighlightTextAttributeUtils.getCommentHighlights(comment, 0);
+        List<Pair<TextRange, TextAttributesKey>> highlights = commentHighlighter.getHighlights(comment, 0);
 
         // then
         Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
-        Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.values().iterator().next());
+        Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.get(0).second);
     }
 
 }
