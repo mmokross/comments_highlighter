@@ -1,5 +1,6 @@
 package com.clutcher.comments.annotator;
 
+import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.clutcher.comments.highlighter.impl.KeywordHighlighter;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
@@ -13,6 +14,7 @@ import com.intellij.psi.PsiKeyword;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JavaKeywordHighlighterAnnotator implements Annotator {
@@ -23,18 +25,27 @@ public class JavaKeywordHighlighterAnnotator implements Annotator {
             final String keyword = element.getText();
             int startOffset = element.getTextRange().getStartOffset();
 
-            if (isMethodAccessModifierKeyword(element)) {
-                KeywordHighlighter keywordHighlighter = ServiceManager.getService(KeywordHighlighter.class);
-                List<Pair<TextRange, TextAttributesKey>> highlights = keywordHighlighter.getHighlights(keyword, startOffset);
+            List<Pair<TextRange, TextAttributesKey>> highlights = getKeywordHighlights(element, keyword, startOffset);
 
-                for (Pair<TextRange, TextAttributesKey> highlight : highlights) {
-                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                            .range(highlight.first)
-                            .textAttributes(highlight.second)
-                            .create();
-                }
+            for (Pair<TextRange, TextAttributesKey> highlight : highlights) {
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .range(highlight.first)
+                        .textAttributes(highlight.second)
+                        .create();
             }
         }
+    }
+
+    private List<Pair<TextRange, TextAttributesKey>> getKeywordHighlights(@NotNull PsiElement element, String keyword, int startOffset) {
+        var keywordHighlighter = ServiceManager.getService(KeywordHighlighter.class);
+
+        List<Pair<TextRange, TextAttributesKey>> highlights = new ArrayList<>();
+        highlights.addAll(keywordHighlighter.getHighlights(HighlightTokenType.KEYWORD, keyword, startOffset));
+
+        if (isMethodAccessModifierKeyword(element)) {
+            highlights.addAll(keywordHighlighter.getHighlights(HighlightTokenType.METHOD_KEYWORD, keyword, startOffset));
+        }
+        return highlights;
     }
 
     private boolean isMethodAccessModifierKeyword(@NotNull PsiElement element) {

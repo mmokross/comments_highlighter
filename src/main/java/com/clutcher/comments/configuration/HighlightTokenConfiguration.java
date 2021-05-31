@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 
-@State(name = "HighlightTokenConfiguration", storages = @Storage("highlightTokenConfiguration-v1.xml"))
+@State(name = "HighlightTokenConfiguration", storages = @Storage("highlightTokenConfiguration-v2.xml"))
 public class HighlightTokenConfiguration implements PersistentStateComponent<HighlightTokenConfiguration.State> {
 
     private static final Multimap<HighlightTokenType, String> INITIAL_TOKENS = new ImmutableMultimap.Builder<HighlightTokenType, String>()
             .putAll(HighlightTokenType.COMMENT, Arrays.asList("!", "?", "*"))
-            .putAll(HighlightTokenType.KEYWORD, "public")
+            .putAll(HighlightTokenType.METHOD_KEYWORD, "public")
             .build();
 
     State currentState;
