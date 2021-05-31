@@ -1,7 +1,6 @@
 package com.clutcher.comments.settings;
 
 import com.clutcher.comments.configuration.HighlightTokenConfiguration;
-import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.clutcher.comments.highlighter.TokenHighlighter;
 import com.clutcher.comments.highlighter.impl.CommentHighlighter;
 import com.clutcher.comments.highlighter.impl.KeywordHighlighter;
@@ -16,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.Icon;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -50,15 +47,15 @@ public class CommentHighlighterColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public AttributesDescriptor[] getAttributeDescriptors() {
-        HighlightTokenConfiguration highlightTokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
+        var highlightTokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
         // ? Is it possible to get list of services by Interface?
         TokenHighlighter commentHighlighter = ServiceManager.getService(CommentHighlighter.class);
         TokenHighlighter keywordHighlighter = ServiceManager.getService(KeywordHighlighter.class);
 
-        Stream<AttributesDescriptor> commentColorStream = highlightTokenConfiguration.getAllTokensByType(HighlightTokenType.COMMENT).stream()
+        Stream<AttributesDescriptor> commentColorStream = highlightTokenConfiguration.getAllTokensByType(commentHighlighter.getSupportedTokenTypes()).stream()
                 .map(token -> createAttributeDescriptor(token, commentHighlighter));
 
-        Stream<AttributesDescriptor> keywordColorStream = highlightTokenConfiguration.getAllTokensByType(HighlightTokenType.KEYWORD).stream()
+        Stream<AttributesDescriptor> keywordColorStream = highlightTokenConfiguration.getAllTokensByType(keywordHighlighter.getSupportedTokenTypes()).stream()
                 .map(token -> createAttributeDescriptor(token, keywordHighlighter));
 
         return Stream.concat(commentColorStream, keywordColorStream).toArray(AttributesDescriptor[]::new);
