@@ -18,39 +18,48 @@ import java.util.List;
 import java.util.Map;
 
 
-@State(name = "HighlightTokenConfiguration", storages = @Storage("customHighlightTokens.xml"))
+@State(name = "HighlightTokenConfiguration", storages = @Storage("highlightTokenConfiguration-v1.xml"))
 public class HighlightTokenConfiguration implements PersistentStateComponent<HighlightTokenConfiguration.State> {
 
-    private static final Multimap<HighlightTokenType, String> DEFAULT_HIGHLIGHT_TOKEN_MAP = new ImmutableMultimap.Builder<HighlightTokenType, String>()
+    private static final Multimap<HighlightTokenType, String> INITIAL_TOKENS = new ImmutableMultimap.Builder<HighlightTokenType, String>()
             .putAll(HighlightTokenType.COMMENT, Arrays.asList("!", "?", "*"))
             .putAll(HighlightTokenType.KEYWORD, "public")
             .build();
 
     State currentState;
 
+    static class State {
+        public Map<HighlightTokenType, Collection<String>> highlightTokenMap;
+    }
+
     public Collection<String> getAllTokensByType(Collection<HighlightTokenType> tokenTypes) {
-        ImmutableSet.Builder<String> builder = ImmutableSet.builder();
+        ImmutableSet.Builder<String> setBuilder = ImmutableSet.builder();
         for (HighlightTokenType tokenType : tokenTypes) {
-            builder.addAll(currentState.customHighlightTokenMap.get(tokenType));
-            builder.addAll(DEFAULT_HIGHLIGHT_TOKEN_MAP.get(tokenType));
+            addTokenByType(tokenType, setBuilder);
         }
-        return builder.build();
+        return setBuilder.build();
     }
 
     public Collection<String> getAllTokensByType(HighlightTokenType type) {
-        return ImmutableSet.<String>builder()
-                .addAll(currentState.customHighlightTokenMap.get(type))
-                .addAll(DEFAULT_HIGHLIGHT_TOKEN_MAP.get(type))
-                .build();
+        ImmutableSet.Builder<String> setBuilder = ImmutableSet.builder();
+        addTokenByType(type, setBuilder);
+        return setBuilder.build();
     }
 
-    public Map<HighlightTokenType, Collection<String>> getCustomTokens() {
-        return Collections.unmodifiableMap(currentState.customHighlightTokenMap);
+    public Map<HighlightTokenType, Collection<String>> getAllTokens() {
+        return Collections.unmodifiableMap(currentState.highlightTokenMap);
     }
 
     public void setCustomTokens(Map<HighlightTokenType, List<String>> updatedTokens) {
         for (Map.Entry<HighlightTokenType, List<String>> entry : updatedTokens.entrySet()) {
-            currentState.customHighlightTokenMap.put(entry.getKey(), entry.getValue());
+            currentState.highlightTokenMap.put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void addTokenByType(HighlightTokenType type, ImmutableSet.Builder<String> setBuilder) {
+        Collection<String> tokens = currentState.highlightTokenMap.get(type);
+        if (tokens != null) {
+            setBuilder.addAll(tokens);
         }
     }
 
@@ -65,16 +74,28 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
     }
 
     @Override
+    @SuppressWarnings("java:S1640")
     public void noStateLoaded() {
+        // ! We can't use EnumMap here, because Intellij IDEA can't serialize it.
         Map<HighlightTokenType, Collection<String>> initialHighlightMap = new HashMap<>();
-        initialHighlightMap.put(HighlightTokenType.COMMENT, new ArrayList<>());
-        initialHighlightMap.put(HighlightTokenType.KEYWORD, new ArrayList<>());
+        for (HighlightTokenType tokenType : HighlightTokenType.values()) {
+            Collection<String> tokens = INITIAL_TOKENS.get(tokenType);
+            if (tokens != null) {
+                initialHighlightMap.put(tokenType, new ArrayList<>(tokens));
+            } else {
+                initialHighlightMap.put(tokenType, new ArrayList<>());
+            }
+        }
 
         currentState = new State();
-        currentState.customHighlightTokenMap = initialHighlightMap;
+        currentState.highlightTokenMap = initialHighlightMap;
     }
 
-    static class State {
-        public Map<HighlightTokenType, Collection<String>> customHighlightTokenMap;
+    @Override
+    public void initializeComponent() {
+        if (currentState == null || currentState.highlightTokenMap == null) {
+            noStateLoaded();
+        }
     }
+
 }
