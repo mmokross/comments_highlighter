@@ -126,7 +126,7 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
         HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
 
         Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
-        Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getCustomTokens();
+        Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getAllTokens();
 
         for (HighlightTokenType value : HighlightTokenType.values()) {
             if (!updatedTokens.get(value).equals(allTokens.get(value))) {
@@ -143,7 +143,7 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
         tableModel = new ListTableModel<>(TYPE_COLUMN, NAME_COLUMN);
 
         HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
-        Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getCustomTokens();
+        Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getAllTokens();
 
         for (Map.Entry<HighlightTokenType, Collection<String>> entry : allTokens.entrySet()) {
             HighlightTokenType tokenType = entry.getKey();
