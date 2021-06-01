@@ -30,6 +30,15 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
 
     static class State {
         public Map<HighlightTokenType, Collection<String>> highlightTokenMap;
+        public boolean plainTextFileHighlightEnabled;
+    }
+
+    public boolean isPlainTextFileHighlightEnabled() {
+        return currentState.plainTextFileHighlightEnabled;
+    }
+
+    public void setPlainTextFileHighlightEnabled(boolean plainTextFileHighlightEnabled) {
+        currentState.plainTextFileHighlightEnabled = plainTextFileHighlightEnabled;
     }
 
     public Collection<String> getAllTokensByType(Collection<HighlightTokenType> tokenTypes) {
@@ -89,6 +98,8 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
 
         currentState = new State();
         currentState.highlightTokenMap = initialHighlightMap;
+
+        currentState.plainTextFileHighlightEnabled = false;
     }
 
     @Override
