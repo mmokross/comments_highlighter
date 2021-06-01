@@ -67,6 +67,7 @@
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="commentsHighlighter-withJava.xml">com.intellij.java</depends>
+    <depends optional="true" config-file="commentsHighlighter-withCSharp.xml">com.intellij.modules.rider</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
