@@ -17,5 +17,4 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     updateSinceUntilBuild false
-    plugins = ['com.intellij.java']
 }
