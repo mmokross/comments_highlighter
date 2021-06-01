@@ -16,6 +16,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h3>2.1</h3>
+        <ul>
+            <li><strong>(Feature)</strong> Add keyword highlighting for C#</li>
+            <li><strong>(Feature)</strong> Add possibility to remove/modify default tokens.</li>
+            <li><strong>(Feature)</strong> Add possibility to highlight any keyword type, not only method keywords.</li>
+        </ul>
         <h3>2.0</h3>
         <ul>
             <li><strong>(Feature)</strong> Add possibility to create custom highlighting for java keyword.</li>

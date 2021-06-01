@@ -1,8 +1,8 @@
 # Comments Highlighter
 
 This plugin allows creating custom highlighting of commented lines on any language. It is possible to add custom
-highlight of language keywords in method signatures in Java (for example, highlight "public" keyword). Plugin has
-possibility to define custom user tokens for commented line highlighting.
+highlight of language keywords in Java and C# (for example, highlight "public" keyword). Plugin has possibility to
+define custom user tokens for commented line highlighting.
 
 ## How to add custom tokens
 + Open settings window
@@ -19,12 +19,24 @@ General architecture is simple and has 2 main parts:
   + **CommentHighlighterAnnotator**
     implements [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator)
     to deal with PsiComment. In such way plugin is able to handle any language, supported by Intellij IDEA.
-  + **KeywordHighlighterAnnotator** language specific annotator to highlight keywords of desired language.
+  + **AbstractKeywordHighlighterAnnotator** abstract annotator to highlight keywords.
+    + Each language requires specific implementation of _isKeywordElement_ and _isMethodAccessModifierKeyword_.
+    + _findClassByName_ is used instead of _instanceof_ comparing to be able to build plugin for any type of IDE(
+      PyCharm,Rider etc).
+    + Language specific implementations:
+      + **JavaKeywordHighlighterAnnotator**
+      + **CSharpKeywordHighlighterAnnotator**
 + Highlighters:
   + **CommentHighlighter** main class to define, what part of comment must be highlighted.
   + **KeywordHighlighter** main class to define, what keywords must be highlighted.
 
 ## Version history
+
+### 2.1
+
++ **(Feature)** Add keyword highlighting for C#.
++ **(Feature)** Add possibility to remove/modify default tokens.
++ **(Feature)** Add possibility to highlight any keyword type, not only method keywords.
 
 ### 2.0
 
