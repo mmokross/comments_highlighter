@@ -15,14 +15,15 @@ import com.intellij.ui.UIBundle;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
+import com.intellij.util.ui.components.BorderLayoutPanel;
 import com.intellij.xml.util.XmlStringUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class CommentTokensConfigurationPanel extends JPanel implements SearchableConfigurable, Configurable.NoScroll {
+public class CommentTokensConfigurationPanel extends BorderLayoutPanel implements SearchableConfigurable, Configurable.NoScroll {
     private final JBTable tokenTable;
     private ListTableModel<Pair<HighlightTokenType, String>> tableModel;
 
@@ -49,65 +50,77 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
     };
 
     private JLabel reopenLabel;
+    private final JCheckBox plainFilesHighlighting;
 
     public CommentTokensConfigurationPanel() {
-        super(new BorderLayout());
+        super(0, 20);
 
         reopenLabel = new JLabel(XmlStringUtil.wrapInHtml("Reopen setting window to see new tokens on Color settings page (https://youtrack.jetbrains.com/issue/IDEA-226087)"));
         reopenLabel.setForeground(JBColor.RED);
 
         tokenTable = new JBTable();
         tokenTable.getEmptyText().setText("No tokens defined");
+        plainFilesHighlighting = new JCheckBox("Enable comment highlighting in Plain text files.");
+
         reset();
-        add(
-                new JLabel(XmlStringUtil.wrapInHtml("Custom comment/keyword tokens would be used to highlight comments/keywords based on color settings")),
-                BorderLayout.NORTH
-        );
 
-        add(
-                ToolbarDecorator.createDecorator(tokenTable)
-                        .setAddAction(button -> {
-                            AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
-                            dlg.setTitle("Add comment token");
-                            if (dlg.showAndGet()) {
-                                HighlightTokenType highlightTokenType = dlg.getCustomTokenType();
-                                String tokenValue = dlg.getToken();
+        BorderLayoutPanel tokensTablePanel = createTokensTablePanel();
 
-                                tableModel.addRow(Pair.create(highlightTokenType, tokenValue));
-                            }
-                        })
-                        .setRemoveAction(button -> {
-                            int returnValue = Messages.showOkCancelDialog("Delete selected token?",
-                                    UIBundle.message("delete.dialog.title"),
-                                    ApplicationBundle.message("button.delete"),
-                                    CommonBundle.getCancelButtonText(),
-                                    Messages.getQuestionIcon());
-                            if (returnValue == Messages.OK) {
-                                tableModel.removeRow(tokenTable.getSelectedRow());
-                            }
-                        })
-                        .setEditAction(button -> {
-                            int selectedRow = tokenTable.getSelectedRow();
-                            Pair<HighlightTokenType, String> value = tableModel.getItem(selectedRow);
+        this.addToTop(plainFilesHighlighting);
+        this.addToCenter(tokensTablePanel);
+    }
 
-                            AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
-                            dlg.setTitle("Edit comment token");
-                            dlg.setCustomTokenType(value.first);
-                            dlg.setToken(value.second);
+    @NotNull
+    private BorderLayoutPanel createTokensTablePanel() {
+        var tableLabel = new JLabel(XmlStringUtil.wrapInHtml("Custom comment/keyword tokens would be used to highlight comments/keywords based on color settings"));
 
-                            if (dlg.showAndGet()) {
-                                final HighlightTokenType editedHighlightTokenType = dlg.getCustomTokenType();
-                                final String editedToken = dlg.getToken();
+        var tokensTablePanel = new BorderLayoutPanel(0, 5);
+        tokensTablePanel
+                .addToTop(tableLabel)
+                .addToCenter(
+                        ToolbarDecorator.createDecorator(tokenTable)
+                                .setAddAction(button -> {
+                                    AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
+                                    dlg.setTitle("Add comment token");
+                                    if (dlg.showAndGet()) {
+                                        HighlightTokenType highlightTokenType = dlg.getCustomTokenType();
+                                        String tokenValue = dlg.getToken();
 
-                                tableModel.removeRow(selectedRow);
-                                tableModel.insertRow(selectedRow, Pair.create(editedHighlightTokenType, editedToken));
-                            }
-                        })
-                        .setButtonComparator("Add", "Edit", "Remove")
-                        .disableUpDownActions()
-                        .createPanel(),
-                BorderLayout.CENTER
-        );
+                                        tableModel.addRow(Pair.create(highlightTokenType, tokenValue));
+                                    }
+                                })
+                                .setRemoveAction(button -> {
+                                    int returnValue = Messages.showOkCancelDialog("Delete selected token?",
+                                            UIBundle.message("delete.dialog.title"),
+                                            ApplicationBundle.message("button.delete"),
+                                            CommonBundle.getCancelButtonText(),
+                                            Messages.getQuestionIcon());
+                                    if (returnValue == Messages.OK) {
+                                        tableModel.removeRow(tokenTable.getSelectedRow());
+                                    }
+                                })
+                                .setEditAction(button -> {
+                                    int selectedRow = tokenTable.getSelectedRow();
+                                    Pair<HighlightTokenType, String> value = tableModel.getItem(selectedRow);
+
+                                    AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
+                                    dlg.setTitle("Edit comment token");
+                                    dlg.setCustomTokenType(value.first);
+                                    dlg.setToken(value.second);
+
+                                    if (dlg.showAndGet()) {
+                                        final HighlightTokenType editedHighlightTokenType = dlg.getCustomTokenType();
+                                        final String editedToken = dlg.getToken();
+
+                                        tableModel.removeRow(selectedRow);
+                                        tableModel.insertRow(selectedRow, Pair.create(editedHighlightTokenType, editedToken));
+                                    }
+                                })
+                                .setButtonComparator("Add", "Edit", "Remove")
+                                .disableUpDownActions()
+                                .createPanel()
+                );
+        return tokensTablePanel;
     }
 
     @Override
@@ -118,12 +131,20 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
 
         HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
         tokenConfiguration.setCustomTokens(updatedTokens);
+        tokenConfiguration.setPlainTextFileHighlightEnabled(plainFilesHighlighting.isSelected());
     }
 
     @Override
     public boolean isModified() {
 
         HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
+
+        boolean savedValue = tokenConfiguration.isPlainTextFileHighlightEnabled();
+        boolean currentValue = plainFilesHighlighting.isSelected();
+
+        if (currentValue != savedValue) {
+            return true;
+        }
 
         Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
         Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getAllTokens();
@@ -153,6 +174,8 @@ public class CommentTokensConfigurationPanel extends JPanel implements Searchabl
         }
 
         tokenTable.setModel(tableModel);
+
+        plainFilesHighlighting.setSelected(tokenConfiguration.isPlainTextFileHighlightEnabled());
     }
 
     private Map<HighlightTokenType, List<String>> getTokenMapFromModel(ListTableModel<Pair<HighlightTokenType, String>> tableModel) {
