@@ -5,20 +5,37 @@
     <vendor email="iclutcher@gmail.com" url="https://clutcher.github.io">clutcher</vendor>
 
     <description><![CDATA[
-      <p>This plugin allows creating custom highlighting of commented lines on any language. It is possible to add custom highlight of language keywords in method signatures in Java (for example, highlight "public" keyword). Plugin has possibility to define custom user tokens for commented line highlighting.</p>
-      <h3>How to add custom user token:</h3>
-      <ul>
+    <p>This plugin allows creating custom highlighting for commented lines and language keyword. Commented lines highlighting is supported for any language, highlighting of language keywords supports Java, Kotlin, C/C++/ObjectiveC and C# (for example, highlight &quot;public&quot; keyword). Plugin has possibility to define custom user tokens for commented line highlighting.</p>
+    <h3>How to add comment highlighting token or language keyword</h3>
+    <ul>
         <li>Open settings window</li>
-        <li>Tools->Comments Highlighter Settings</li>
-        <li>Click on "+" sign and enter any token in popup. (Third screenshot of plugin)</li>
-        <li><b>Reopen settings window.</b> This is mandatory step due to <a href="https://youtrack.jetbrains.com/issue/IDEA-226087">bug in Intellij</a></li>
-      </ul>
+        <li>Editor-&gt;Comment Highlighter</li>
+        <li>Click on &quot;+&quot; sign, select type of highlight token/keyword and enter token/keyword itself in popup. (Third screenshot of plugin)</li>
+        <li>Click &quot;Apply&quot;</li>
+        <li><strong>Reopen settings window.</strong> This is mandatory step due to <a href="https://youtrack.jetbrains.com/issue/IDEA-226087">bug in Intellij</a></li>
+    </ul>
+    <h3>How to enable comment highlighting in plain text files</h3>
+    <ul>
+        <li>Open settings window</li>
+        <li>Editor-&gt;Comment Highlighter</li>
+        <li>Enable checkbox &quot;Enable comment highlighting in Plain text files.&quot;</li>
+        <li>Click &quot;Apply&quot;</li>
+    </ul>
+    <p>In plain text files could be used &quot;#&quot; or &quot;//&quot; as a comment line.</p>
     ]]></description>
 
     <change-notes><![CDATA[
+        <h3>2.2</h3>
+        <ul>
+            <li><strong>(Feature)</strong> Add possibility to highlight comments in plain txt files.</li>
+            <li><strong>(Feature)</strong> Add keyword highlighting for C/C++/ObjectiveC.</li>
+            <li><strong>(Feature)</strong> AAdd possibility to highlight Kotlin keywords.</li>
+            <li><strong>(Improvement)</strong> Migrate on newest gradle.</li>
+            <li><strong>(Improvement)</strong> Move settings panel into "Editor" section.</li>
+        </ul>
         <h3>2.1</h3>
         <ul>
-            <li><strong>(Feature)</strong> Add keyword highlighting for C#</li>
+            <li><strong>(Feature)</strong> Add keyword highlighting for C#.</li>
             <li><strong>(Feature)</strong> Add possibility to remove/modify default tokens.</li>
             <li><strong>(Feature)</strong> Add possibility to highlight any keyword type, not only method keywords.</li>
         </ul>

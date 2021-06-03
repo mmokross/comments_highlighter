@@ -1,15 +1,28 @@
 # Comments Highlighter
 
-This plugin allows creating custom highlighting of commented lines on any language. It is possible to add custom
-highlight of language keywords in Java and C# (for example, highlight "public" keyword). Plugin has possibility to
-define custom user tokens for commented line highlighting.
+This plugin allows creating custom highlighting for commented lines and language keyword. Commented lines highlighting
+is supported for any language, highlighting of language keywords supports Java, Kotlin, C/C++/ObjectiveC and C# (for
+example, highlight "public" keyword). Plugin has possibility to define custom user tokens for commented line
+highlighting.
 
-## How to add custom tokens
+## How to add comment highlighting token or language keyword
+
 + Open settings window
-+ Tools->Comments Highlighter Settings
-+ Click on "+" sign and enter any token in popup. (Third screenshot of plugin)
++ Editor->Comment Highlighter
++ Click on "+" sign, select type of highlight token/keyword and enter token/keyword itself in popup. (Third screenshot
+  of plugin)
++ Click "Apply"
 + **Reopen settings window.** This is mandatory step due
   to [bug in Intellij](https://youtrack.jetbrains.com/issue/IDEA-226087)
+
+## How to enable comment highlighting in plain text files
+
++ Open settings window
++ Editor->Comment Highlighter
++ Enable checkbox "Enable comment highlighting in Plain text files."
++ Click "Apply"
+
+In plain text files could be used "#" or "//" as a comment line.
 
 ## Implementation notes
 
@@ -21,16 +34,26 @@ General architecture is simple and has 2 main parts:
     to deal with PsiComment. In such way plugin is able to handle any language, supported by Intellij IDEA.
   + **AbstractKeywordHighlighterAnnotator** abstract annotator to highlight keywords.
     + Each language requires specific implementation of _isKeywordElement_ and _isMethodAccessModifierKeyword_.
-    + _findClassByName_ is used instead of _instanceof_ comparing to be able to build plugin for any type of IDE(
+    + _findClassByName_ is used instead of _instanceof_ comparing to be able to compile plugin on any type of IDE(
       PyCharm,Rider etc).
     + Language specific implementations:
       + **JavaKeywordHighlighterAnnotator**
+      + **KotlinKeywordHighlighterAnnotator**
+      + **CKeywordHighlighterAnnotator**
       + **CSharpKeywordHighlighterAnnotator**
 + Highlighters:
   + **CommentHighlighter** main class to define, what part of comment must be highlighted.
   + **KeywordHighlighter** main class to define, what keywords must be highlighted.
 
 ## Version history
+
+### 2.2
+
++ **(Feature)** Add possibility to highlight comments in plain txt files.
++ **(Feature)** Add keyword highlighting for C/C++/ObjectiveC.
++ **(Feature)** Add possibility to highlight Kotlin keywords.
++ **(Improvement)** Migrate on newest gradle.
++ **(Improvement)** Move settings into panel into "Editor" section.
 
 ### 2.1
 
