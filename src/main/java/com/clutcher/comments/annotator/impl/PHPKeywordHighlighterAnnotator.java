@@ -12,7 +12,7 @@ public class PHPKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAn
     private final Class<?> keywordTokenClazz;
     private final Class<?> methodClazz;
 
-    private PHPKeywordHighlighterAnnotator() {
+    public PHPKeywordHighlighterAnnotator() {
         this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.php.lang.psi.PhpElementType");
         this.methodClazz = AnnotatorUtils.findClassByName("com.jetbrains.php.lang.psi.elements.impl.MethodImpl");
     }

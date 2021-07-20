@@ -10,7 +10,7 @@ public class JavaKeywordHighlighterAnnotator extends AbstractKeywordHighlighterA
     private final Class<?> keywordTokenClazz;
     private final Class<?> methodClazz;
 
-    private JavaKeywordHighlighterAnnotator() {
+    public JavaKeywordHighlighterAnnotator() {
         this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.intellij.psi.PsiKeyword");
         this.methodClazz = AnnotatorUtils.findClassByName("com.intellij.psi.PsiMethod");
     }

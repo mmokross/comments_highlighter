@@ -12,7 +12,7 @@ public class CSharpKeywordHighlighterAnnotator extends AbstractKeywordHighlighte
     private final Class<?> keywordTokenClazz;
     private final Class<?> dummyBlockClazz;
 
-    private CSharpKeywordHighlighterAnnotator() {
+    public CSharpKeywordHighlighterAnnotator() {
         this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.rider.ideaInterop.fileTypes.csharp.lexer.CSharpKeywordTokenNodeType");
         this.dummyBlockClazz = AnnotatorUtils.findClassByName("com.jetbrains.rider.ideaInterop.fileTypes.csharp.psi.CSharpDummyBlock");
     }

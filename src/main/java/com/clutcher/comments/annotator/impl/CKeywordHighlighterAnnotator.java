@@ -12,7 +12,7 @@ public class CKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAnno
     private final Class<?> keywordTokenClazz;
     private final Class<?> methodClazz;
 
-    private CKeywordHighlighterAnnotator() {
+    public CKeywordHighlighterAnnotator() {
         this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.cidr.lang.parser.OCKeywordElementType");
         this.methodClazz = AnnotatorUtils.findClassByName("com.jetbrains.cidr.lang.psi.OCTypeElement");
     }

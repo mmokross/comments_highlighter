@@ -12,7 +12,7 @@ public class KotlinKeywordHighlighterAnnotator extends AbstractKeywordHighlighte
     private final Class<?> keywordTokenClazz;
     private final Class<?> methodClazz;
 
-    private KotlinKeywordHighlighterAnnotator() {
+    public KotlinKeywordHighlighterAnnotator() {
         this.keywordTokenClazz = AnnotatorUtils.findClassByName("org.jetbrains.kotlin.lexer.KtKeywordToken");
         this.methodClazz = AnnotatorUtils.findClassByName("org.jetbrains.kotlin.psi.KtFunction");
     }
