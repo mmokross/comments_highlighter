@@ -62,6 +62,19 @@ public class OneLineCommentCommentHighlighterTestCase extends LightPlatformTestC
         Assert.assertEquals("Wrong highlight was assigned", WARN_COMMENT, highlights.get(0).second);
     }
 
+    @Test
+    public void shouldFindOneLineWarnCommentWhenTabulationSignIsPresent() {
+        // given
+        String comment = " // \t ?   ANOTHER TESTING STRING  ";
+
+        // when
+        List<Pair<TextRange, TextAttributesKey>> highlights = commentHighlighter.getHighlights(comment, 0);
+
+        // then
+        Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
+        Assert.assertEquals("Wrong highlight was assigned", WARN_COMMENT, highlights.get(0).second);
+    }
+
 
     @Test
     public void shouldFindOneLineErrorComment() {

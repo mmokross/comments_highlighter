@@ -1,5 +1,7 @@
-package com.clutcher.comments.annotator;
+package com.clutcher.comments.annotator.impl;
 
+import com.clutcher.comments.annotator.AbstractKeywordHighlighterAnnotator;
+import com.clutcher.comments.utils.AnnotatorUtils;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -10,9 +12,9 @@ public class CKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAnno
     private final Class<?> keywordTokenClazz;
     private final Class<?> methodClazz;
 
-    private CKeywordHighlighterAnnotator() {
-        this.keywordTokenClazz = findClassByName("com.jetbrains.cidr.lang.parser.OCKeywordElementType");
-        this.methodClazz = findClassByName("com.jetbrains.cidr.lang.psi.OCTypeElement");
+    public CKeywordHighlighterAnnotator() {
+        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.cidr.lang.parser.OCKeywordElementType");
+        this.methodClazz = AnnotatorUtils.findClassByName("com.jetbrains.cidr.lang.psi.OCTypeElement");
     }
 
 
@@ -27,7 +29,7 @@ public class CKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAnno
 
     @Override
     protected boolean isMethodAccessModifierKeyword(@NotNull PsiElement element) {
-        PsiElement rootParent = getRootElement(element);
+        PsiElement rootParent = AnnotatorUtils.getRootElement(element);
         if (rootParent == null) {
             return false;
         }

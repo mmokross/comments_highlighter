@@ -1,5 +1,7 @@
-package com.clutcher.comments.annotator;
+package com.clutcher.comments.annotator.impl;
 
+import com.clutcher.comments.annotator.AbstractKeywordHighlighterAnnotator;
+import com.clutcher.comments.utils.AnnotatorUtils;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,9 +10,9 @@ public class JavaKeywordHighlighterAnnotator extends AbstractKeywordHighlighterA
     private final Class<?> keywordTokenClazz;
     private final Class<?> methodClazz;
 
-    private JavaKeywordHighlighterAnnotator() {
-        this.keywordTokenClazz = findClassByName("com.intellij.psi.PsiKeyword");
-        this.methodClazz = findClassByName("com.intellij.psi.PsiMethod");
+    public JavaKeywordHighlighterAnnotator() {
+        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.intellij.psi.PsiKeyword");
+        this.methodClazz = AnnotatorUtils.findClassByName("com.intellij.psi.PsiMethod");
     }
 
 
@@ -21,7 +23,7 @@ public class JavaKeywordHighlighterAnnotator extends AbstractKeywordHighlighterA
 
     @Override
     protected boolean isMethodAccessModifierKeyword(@NotNull PsiElement element) {
-        PsiElement rootParent = getRootElement(element);
+        PsiElement rootParent = AnnotatorUtils.getRootElement(element);
         if (rootParent == null) {
             return false;
         }

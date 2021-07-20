@@ -98,7 +98,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <annotator language=""
-                   implementationClass="com.clutcher.comments.annotator.CommentHighlighterAnnotator"/>
+                   implementationClass="com.clutcher.comments.annotator.impl.GenericCommentHighlighterAnnotator"/>
 
         <colorSettingsPage implementation="com.clutcher.comments.settings.CommentHighlighterColorSettingsPage"/>
 

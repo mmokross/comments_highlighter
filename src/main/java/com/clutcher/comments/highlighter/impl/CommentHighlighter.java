@@ -19,8 +19,8 @@ import java.util.List;
 @Service
 public class CommentHighlighter implements TokenHighlighter {
 
-    private static final String JAVA_DOC_START_LINE = "/**";
-    private static final List<Character> START_LINE_CHARACTERS_LIST = Arrays.asList('/', '<', '-', ' ', '#', '*', '!');
+    private static final String DOC_COMMENT_START_LINE = "/**";
+    private static final List<Character> START_LINE_CHARACTERS_LIST = Arrays.asList('/', '<', '-', ' ', '#', '*', '!', '\t');
 
     @Override
     public List<Pair<TextRange, TextAttributesKey>> getHighlights(String text, int startOffset) {
@@ -30,7 +30,7 @@ public class CommentHighlighter implements TokenHighlighter {
         // General comment data
         final int commentLength = text.length();
         final int lastCharPosition = text.length() - 1;
-        final boolean isDocComment = text.startsWith(JAVA_DOC_START_LINE);
+        final boolean isDocComment = text.startsWith(DOC_COMMENT_START_LINE);
 
         // Variables to process current line highlighting
         // ? Move into separate DTO object? Will it decrease performance?

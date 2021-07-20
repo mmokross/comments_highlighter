@@ -2,6 +2,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- ObjectiveC languageID is used for C and C++ also -->
         <annotator language="ObjectiveC"
-                   implementationClass="com.clutcher.comments.annotator.CKeywordHighlighterAnnotator"/>
+                   implementationClass="com.clutcher.comments.annotator.impl.CKeywordHighlighterAnnotator"/>
     </extensions>
 </idea-plugin>

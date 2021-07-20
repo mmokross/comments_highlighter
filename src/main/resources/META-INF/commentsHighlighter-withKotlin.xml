@@ -1,6 +1,6 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <annotator language="kotlin"
-                   implementationClass="com.clutcher.comments.annotator.KotlinKeywordHighlighterAnnotator"/>
+                   implementationClass="com.clutcher.comments.annotator.impl.KotlinKeywordHighlighterAnnotator"/>
     </extensions>
 </idea-plugin>

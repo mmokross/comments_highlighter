@@ -1,5 +1,7 @@
-package com.clutcher.comments.annotator;
+package com.clutcher.comments.annotator.impl;
 
+import com.clutcher.comments.annotator.AbstractKeywordHighlighterAnnotator;
+import com.clutcher.comments.utils.AnnotatorUtils;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -10,9 +12,9 @@ public class CSharpKeywordHighlighterAnnotator extends AbstractKeywordHighlighte
     private final Class<?> keywordTokenClazz;
     private final Class<?> dummyBlockClazz;
 
-    private CSharpKeywordHighlighterAnnotator() {
-        this.keywordTokenClazz = findClassByName("com.jetbrains.rider.ideaInterop.fileTypes.csharp.lexer.CSharpKeywordTokenNodeType");
-        this.dummyBlockClazz = findClassByName("com.jetbrains.rider.ideaInterop.fileTypes.csharp.psi.CSharpDummyBlock");
+    public CSharpKeywordHighlighterAnnotator() {
+        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.rider.ideaInterop.fileTypes.csharp.lexer.CSharpKeywordTokenNodeType");
+        this.dummyBlockClazz = AnnotatorUtils.findClassByName("com.jetbrains.rider.ideaInterop.fileTypes.csharp.psi.CSharpDummyBlock");
     }
 
     @Override
@@ -26,7 +28,7 @@ public class CSharpKeywordHighlighterAnnotator extends AbstractKeywordHighlighte
 
     @Override
     protected boolean isMethodAccessModifierKeyword(@NotNull PsiElement element) {
-        PsiElement rootParent = getRootElement(element);
+        PsiElement rootParent = AnnotatorUtils.getRootElement(element);
         if (rootParent == null) {
             return false;
         }

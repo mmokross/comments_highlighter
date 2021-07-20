@@ -1,5 +1,7 @@
-package com.clutcher.comments.annotator;
+package com.clutcher.comments.annotator.impl;
 
+import com.clutcher.comments.annotator.AbstractKeywordHighlighterAnnotator;
+import com.clutcher.comments.utils.AnnotatorUtils;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -10,9 +12,9 @@ public class KotlinKeywordHighlighterAnnotator extends AbstractKeywordHighlighte
     private final Class<?> keywordTokenClazz;
     private final Class<?> methodClazz;
 
-    private KotlinKeywordHighlighterAnnotator() {
-        this.keywordTokenClazz = findClassByName("org.jetbrains.kotlin.lexer.KtKeywordToken");
-        this.methodClazz = findClassByName("org.jetbrains.kotlin.psi.KtFunction");
+    public KotlinKeywordHighlighterAnnotator() {
+        this.keywordTokenClazz = AnnotatorUtils.findClassByName("org.jetbrains.kotlin.lexer.KtKeywordToken");
+        this.methodClazz = AnnotatorUtils.findClassByName("org.jetbrains.kotlin.psi.KtFunction");
     }
 
 
@@ -27,7 +29,7 @@ public class KotlinKeywordHighlighterAnnotator extends AbstractKeywordHighlighte
 
     @Override
     protected boolean isMethodAccessModifierKeyword(@NotNull PsiElement element) {
-        PsiElement rootParent = getRootElement(element);
+        PsiElement rootParent = AnnotatorUtils.getRootElement(element);
         if (rootParent == null) {
             return false;
         }
