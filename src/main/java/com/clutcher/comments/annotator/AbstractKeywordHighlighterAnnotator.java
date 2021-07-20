@@ -11,7 +11,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,23 +51,5 @@ public abstract class AbstractKeywordHighlighterAnnotator implements Annotator {
     protected abstract boolean isKeywordElement(@NotNull PsiElement element);
 
     protected abstract boolean isMethodAccessModifierKeyword(@NotNull PsiElement element);
-
-    @NotNull
-    protected Class<?> findClassByName(String className) {
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            return Void.class;
-        }
-    }
-
-    @Nullable
-    protected PsiElement getRootElement(@NotNull PsiElement element) {
-        PsiElement parent = element.getParent();
-        if (parent == null) {
-            return null;
-        }
-        return parent.getParent();
-    }
 
 }

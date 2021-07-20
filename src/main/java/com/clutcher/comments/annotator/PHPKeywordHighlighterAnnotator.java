@@ -1,5 +1,6 @@
 package com.clutcher.comments.annotator;
 
+import com.clutcher.comments.utils.AnnotatorUtils;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -11,8 +12,8 @@ public class PHPKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAn
     private final Class<?> methodClazz;
 
     private PHPKeywordHighlighterAnnotator() {
-        this.keywordTokenClazz = findClassByName("com.jetbrains.php.lang.psi.PhpElementType");
-        this.methodClazz = findClassByName("com.jetbrains.php.lang.psi.elements.impl.MethodImpl");
+        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.php.lang.psi.PhpElementType");
+        this.methodClazz = AnnotatorUtils.findClassByName("com.jetbrains.php.lang.psi.elements.impl.MethodImpl");
     }
 
 
@@ -27,7 +28,7 @@ public class PHPKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAn
 
     @Override
     protected boolean isMethodAccessModifierKeyword(@NotNull PsiElement element) {
-        PsiElement rootParent = getRootElement(element);
+        PsiElement rootParent = AnnotatorUtils.getRootElement(element);
         if (rootParent == null) {
             return false;
         }
