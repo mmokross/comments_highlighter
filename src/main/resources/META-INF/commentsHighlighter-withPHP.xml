@@ -2,7 +2,5 @@
     <extensions defaultExtensionNs="com.intellij">
         <annotator language="PHP"
                    implementationClass="com.clutcher.comments.annotator.impl.PHPKeywordHighlighterAnnotator"/>
-        <annotator language="PHP"
-                   implementationClass="com.clutcher.comments.annotator.impl.PHPDocCommentHighlighterAnnotator"/>
     </extensions>
 </idea-plugin>
