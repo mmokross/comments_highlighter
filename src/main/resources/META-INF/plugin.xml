@@ -93,6 +93,7 @@
     <depends optional="true" config-file="commentsHighlighter-withCSharp.xml">com.intellij.modules.rider</depends>
     <depends optional="true" config-file="commentsHighlighter-withKotlin.xml">org.jetbrains.kotlin</depends>
     <depends optional="true" config-file="commentsHighlighter-withC.xml">com.intellij.cidr.lang</depends>
+    <depends optional="true" config-file="commentsHighlighter-withPHP.xml">com.jetbrains.php</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
