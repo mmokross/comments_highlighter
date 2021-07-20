@@ -1,0 +1,7 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- ObjectiveC languageID is used for C and C++ also -->
+        <annotator language="PHP"
+                   implementationClass="com.clutcher.comments.annotator.PHPKeywordHighlighterAnnotator"/>
+    </extensions>
+</idea-plugin>
