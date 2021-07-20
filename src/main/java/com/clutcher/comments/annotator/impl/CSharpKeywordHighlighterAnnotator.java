@@ -1,21 +1,21 @@
-package com.clutcher.comments.annotator;
+package com.clutcher.comments.annotator.impl;
 
+import com.clutcher.comments.annotator.AbstractKeywordHighlighterAnnotator;
 import com.clutcher.comments.utils.AnnotatorUtils;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
-public class KotlinKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAnnotator {
+public class CSharpKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAnnotator {
 
     private final Class<?> keywordTokenClazz;
-    private final Class<?> methodClazz;
+    private final Class<?> dummyBlockClazz;
 
-    private KotlinKeywordHighlighterAnnotator() {
-        this.keywordTokenClazz = AnnotatorUtils.findClassByName("org.jetbrains.kotlin.lexer.KtKeywordToken");
-        this.methodClazz = AnnotatorUtils.findClassByName("org.jetbrains.kotlin.psi.KtFunction");
+    private CSharpKeywordHighlighterAnnotator() {
+        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.rider.ideaInterop.fileTypes.csharp.lexer.CSharpKeywordTokenNodeType");
+        this.dummyBlockClazz = AnnotatorUtils.findClassByName("com.jetbrains.rider.ideaInterop.fileTypes.csharp.psi.CSharpDummyBlock");
     }
-
 
     @Override
     protected boolean isKeywordElement(@NotNull PsiElement element) {
@@ -32,7 +32,7 @@ public class KotlinKeywordHighlighterAnnotator extends AbstractKeywordHighlighte
         if (rootParent == null) {
             return false;
         }
-        return methodClazz.isAssignableFrom(rootParent.getClass());
+        return dummyBlockClazz.isAssignableFrom(rootParent.getClass());
     }
 
 }

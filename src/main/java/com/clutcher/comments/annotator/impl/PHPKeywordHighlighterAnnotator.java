@@ -1,19 +1,20 @@
-package com.clutcher.comments.annotator;
+package com.clutcher.comments.annotator.impl;
 
+import com.clutcher.comments.annotator.AbstractKeywordHighlighterAnnotator;
 import com.clutcher.comments.utils.AnnotatorUtils;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
-public class CKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAnnotator {
+public class PHPKeywordHighlighterAnnotator extends AbstractKeywordHighlighterAnnotator {
 
     private final Class<?> keywordTokenClazz;
     private final Class<?> methodClazz;
 
-    private CKeywordHighlighterAnnotator() {
-        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.cidr.lang.parser.OCKeywordElementType");
-        this.methodClazz = AnnotatorUtils.findClassByName("com.jetbrains.cidr.lang.psi.OCTypeElement");
+    private PHPKeywordHighlighterAnnotator() {
+        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.jetbrains.php.lang.psi.PhpElementType");
+        this.methodClazz = AnnotatorUtils.findClassByName("com.jetbrains.php.lang.psi.elements.impl.MethodImpl");
     }
 
 

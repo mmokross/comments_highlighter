@@ -1,6 +1,6 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <annotator language="JAVA"
-                   implementationClass="com.clutcher.comments.annotator.JavaKeywordHighlighterAnnotator"/>
+                   implementationClass="com.clutcher.comments.annotator.impl.JavaKeywordHighlighterAnnotator"/>
     </extensions>
 </idea-plugin>
