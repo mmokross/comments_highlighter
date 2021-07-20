@@ -29,10 +29,14 @@ In plain text files could be used "#" or "//" as a comment line.
 General architecture is simple and has 2 main parts:
 
 + Annotators:
-  + **CommentHighlighterAnnotator**
-    implements [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator)
-    to deal with PsiComment. In such way plugin is able to handle any language, supported by Intellij IDEA.
-  + **AbstractKeywordHighlighterAnnotator** abstract annotator to highlight keywords.
+  + **AbstractCommentHighlighterAnnotator**
+    abstract [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator)
+    to highlight comments
+    + **GenericCommentHighlighterAnnotator** highlights PsiComment type. In such way plugin is able to handle any
+      language, supported by Intellij IDEA.
+  + **AbstractKeywordHighlighterAnnotator**
+    abstract [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator)
+    to highlight keywords.
     + Each language requires specific implementation of _isKeywordElement_ and _isMethodAccessModifierKeyword_.
     + _findClassByName_ is used instead of _instanceof_ comparing to be able to compile plugin on any type of IDE(
       PyCharm,Rider etc).
@@ -46,6 +50,11 @@ General architecture is simple and has 2 main parts:
   + **KeywordHighlighter** main class to define, what keywords must be highlighted.
 
 ## Version history
+
+### 2.3
+
++ **(Bug Fix)** Add tab sign as valid start line char.
++ **(Feature)** Add possibility to highlight PHP keywords.
 
 ### 2.2
 
