@@ -34,7 +34,7 @@
         <ul>
             <li><strong>(Feature)</strong> Add possibility to highlight comments in plain txt files.</li>
             <li><strong>(Feature)</strong> Add keyword highlighting for C/C++/ObjectiveC.</li>
-            <li><strong>(Feature)</strong> AAdd possibility to highlight Kotlin keywords.</li>
+            <li><strong>(Feature)</strong> Add possibility to highlight Kotlin keywords.</li>
             <li><strong>(Improvement)</strong> Migrate on newest gradle.</li>
             <li><strong>(Improvement)</strong> Move settings panel into "Editor" section.</li>
         </ul>
