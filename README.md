@@ -1,8 +1,8 @@
 # Comments Highlighter
 
 This plugin allows creating custom highlighting for commented lines and language keyword. Commented lines highlighting
-is supported for any language, highlighting of language keywords supports Java, Kotlin, C/C++/ObjectiveC and C# (for
-example, highlight "public" keyword). Plugin has possibility to define custom user tokens for commented line
+is supported for any language, highlighting of language keywords supports Java, Kotlin, PHP, C/C++/ObjectiveC and C# (
+for example, highlight "public" keyword). Plugin has possibility to define custom user tokens for commented line
 highlighting.
 
 ## How to add comment highlighting token or language keyword
