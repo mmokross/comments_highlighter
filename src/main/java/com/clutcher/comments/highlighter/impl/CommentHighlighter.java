@@ -20,7 +20,7 @@ import java.util.List;
 public class CommentHighlighter implements TokenHighlighter {
 
     private static final String DOC_COMMENT_START_LINE = "/**";
-    private static final List<Character> START_LINE_CHARACTERS_LIST = Arrays.asList('/', '<', '-', ' ', '#', '*', '!', '\t');
+    private static final List<Character> START_LINE_CHARACTERS_LIST = Arrays.asList('/', '<', '-', ' ', '#', '*', '!', '\t', '{');
 
     @Override
     public List<Pair<TextRange, TextAttributesKey>> getHighlights(String text, int startOffset) {

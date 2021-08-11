@@ -89,6 +89,44 @@ public class OneLineCommentCommentHighlighterTestCase extends LightPlatformTestC
         Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.get(0).second);
     }
 
+    @Test
+    public void shouldFindOneLineErrorCommentForTwigTemplate() {
+        // given
+        String comment = "{# ! Test #}";
+
+        // when
+        List<Pair<TextRange, TextAttributesKey>> highlights = commentHighlighter.getHighlights(comment, 0);
+
+        // then
+        Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
+        Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.get(0).second);
+    }
+
+    @Test
+    public void shouldFindOneLineErrorCommentForBladeTemplate() {
+        // given
+        String comment = "{{-- ! Test --}}";
+
+        // when
+        List<Pair<TextRange, TextAttributesKey>> highlights = commentHighlighter.getHighlights(comment, 0);
+
+        // then
+        Assert.assertEquals("Wrong number of highlights was found", 1, highlights.size());
+        Assert.assertEquals("Wrong highlight was assigned", ERROR_COMMENT, highlights.get(0).second);
+    }
+
+    @Test
+    public void shouldFindNoCommentsForTwigTemplate() {
+        // given
+        String comment = "{# Test #}";
+
+        // when
+        List<Pair<TextRange, TextAttributesKey>> highlights = commentHighlighter.getHighlights(comment, 0);
+
+        // then
+        Assert.assertEquals("Wrong number of highlights was found", 0, highlights.size());
+    }
+
 
     @Test
     public void shouldFindNoComment() {
