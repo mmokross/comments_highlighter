@@ -51,6 +51,10 @@ General architecture is simple and has 2 main parts:
 
 ## Version history
 
+### 2.3.1
+
++ **(Bug Fix)** Fix comment highlighting for Twig and Blade templates.
+
 ### 2.3
 
 + **(Bug Fix)** Add tab sign as valid start line char.

@@ -25,6 +25,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <h3>2.3.1</h3>
+        <ul>
+            <li><strong>(Bug Fix)</strong> Fix comment highlighting for Twig and Blade templates.</li>
+        </ul>
         <h3>2.3</h3>
         <ul>
             <li><strong>(Bug Fix)</strong> Add tab sign as valid start line char.</li>
