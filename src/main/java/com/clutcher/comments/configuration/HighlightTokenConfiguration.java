@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,16 @@ public class HighlightTokenConfiguration implements PersistentStateComponent<Hig
 
     public void setCustomTokens(Map<HighlightTokenType, List<String>> updatedTokens) {
         for (Map.Entry<HighlightTokenType, List<String>> entry : updatedTokens.entrySet()) {
-            currentState.highlightTokenMap.put(entry.getKey(), entry.getValue());
+
+            // ! During token resolving in CommentHighlighter we resolve first acceptable token.
+            // ! In case tokens are overlapping it would lead to unexpected behaviour.
+            // ! We need to sort tokens in CommentHighlighter#containsHighlightToken to get the longest one to get rid of unexpected behaviour.
+            // ! But such approach will lead to performance degradations.
+            // ! Instead, we will sort tokens on save, so first acceptable token resolving will lead to desired behaviour.
+            List<String> values = entry.getValue();
+            values.sort(Comparator.comparingInt(String::length).reversed());
+
+            currentState.highlightTokenMap.put(entry.getKey(), values);
         }
     }
 
