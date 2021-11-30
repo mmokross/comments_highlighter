@@ -123,6 +123,13 @@ public class CommentHighlighter implements TokenHighlighter {
     }
 
     private boolean containsHighlightToken(String commentSubstring, Collection<String> supportedTokens) {
+        // ! We resolve first acceptable token. Tokens are received from saved configuration, so they are
+        // ! always sorted by length desc.
+        // ! In such case it allows to resolve longest token in case there is overlapping tokens.
+
+        // ! For example, we have tokens ">", ">>", ">>>" and comment line "// >>>".
+        // ! In such case we want to resolve token ">>>", not ">".
+
         for (String token : supportedTokens) {
             if (commentSubstring.startsWith(token)) {
                 return true;
