@@ -51,6 +51,10 @@ General architecture is simple and has 2 main parts:
 
 ## Version history
 
+### 2.3.2
+
++ **(Bug Fix)** Fix comment highlighting for tokens, which contains other tokens.
+
 ### 2.3.1
 
 + **(Bug Fix)** Fix comment highlighting for Twig and Blade templates.
