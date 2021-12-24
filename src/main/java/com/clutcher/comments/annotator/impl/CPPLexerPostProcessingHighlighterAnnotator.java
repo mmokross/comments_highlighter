@@ -21,12 +21,12 @@ public class CPPLexerPostProcessingHighlighterAnnotator extends AbstractLexerPos
 
     @Override
     protected boolean isCommentToken(IElementType token) {
-        return tokenTypeClazz.isAssignableFrom(token.getClass()) && token.getDebugName().contains("COMMENT");
+        return tokenTypeClazz.isAssignableFrom(token.getClass()) && token.toString().contains("COMMENT");
     }
 
     @Override
     protected boolean isKeywordToken(IElementType token) {
-        return tokenTypeClazz.isAssignableFrom(token.getClass()) && token.getDebugName().contains("KEYWORD");
+        return tokenTypeClazz.isAssignableFrom(token.getClass()) && token.toString().contains("KEYWORD");
     }
 
     @Override

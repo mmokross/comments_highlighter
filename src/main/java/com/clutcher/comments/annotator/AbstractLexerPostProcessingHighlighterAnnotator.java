@@ -6,7 +6,7 @@ import com.clutcher.comments.highlighter.impl.KeywordHighlighter;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.event.DocumentListener;
@@ -25,9 +25,8 @@ import java.util.List;
 
 public abstract class AbstractLexerPostProcessingHighlighterAnnotator implements Annotator {
 
-    private final CommentHighlighter commentHighlighter = ServiceManager.getService(CommentHighlighter.class);
-
-    private final KeywordHighlighter keywordHighlighter = ServiceManager.getService(KeywordHighlighter.class);
+    private static final CommentHighlighter commentHighlighter = ApplicationManager.getApplication().getService(CommentHighlighter.class);
+    private static final KeywordHighlighter keywordHighlighter = ApplicationManager.getApplication().getService(KeywordHighlighter.class);
 
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {

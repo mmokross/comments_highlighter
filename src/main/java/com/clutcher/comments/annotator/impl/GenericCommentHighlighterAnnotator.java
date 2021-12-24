@@ -2,7 +2,7 @@ package com.clutcher.comments.annotator.impl;
 
 import com.clutcher.comments.annotator.AbstractCommentHighlighterAnnotator;
 import com.clutcher.comments.configuration.HighlightTokenConfiguration;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPlainText;
@@ -10,13 +10,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class GenericCommentHighlighterAnnotator extends AbstractCommentHighlighterAnnotator {
 
+    private static final HighlightTokenConfiguration tokenConfiguration = ApplicationManager.getApplication().getService(HighlightTokenConfiguration.class);
+
     @Override
     protected boolean isCommentHighlightingElement(@NotNull PsiElement element) {
         return isCommentType(element) || isPlainTextHighlight(element);
     }
 
     private boolean isPlainTextHighlight(@NotNull PsiElement element) {
-        return element instanceof PsiPlainText && ServiceManager.getService(HighlightTokenConfiguration.class).isPlainTextFileHighlightEnabled();
+        return element instanceof PsiPlainText && tokenConfiguration.isPlainTextFileHighlightEnabled();
     }
 
     private boolean isCommentType(@NotNull PsiElement element) {

@@ -4,7 +4,7 @@ import com.clutcher.comments.configuration.HighlightTokenConfiguration;
 import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.intellij.CommonBundle;
 import com.intellij.openapi.application.ApplicationBundle;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.Messages;
@@ -21,10 +21,8 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import java.awt.BorderLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -33,6 +31,9 @@ import java.util.Map;
 
 
 public class CommentTokensConfigurationPanel extends BorderLayoutPanel implements SearchableConfigurable, Configurable.NoScroll {
+
+    private static final HighlightTokenConfiguration tokenConfiguration = ApplicationManager.getApplication().getService(HighlightTokenConfiguration.class);
+
     private final JBTable tokenTable;
     private ListTableModel<Pair<HighlightTokenType, String>> tableModel;
 
@@ -79,46 +80,46 @@ public class CommentTokensConfigurationPanel extends BorderLayoutPanel implement
                 .addToTop(tableLabel)
                 .addToCenter(
                         ToolbarDecorator.createDecorator(tokenTable)
-                                .setAddAction(button -> {
-                                    AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
-                                    dlg.setTitle("Add comment token");
-                                    if (dlg.showAndGet()) {
-                                        HighlightTokenType highlightTokenType = dlg.getCustomTokenType();
-                                        String tokenValue = dlg.getToken();
+                                        .setAddAction(button -> {
+                                            AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
+                                            dlg.setTitle("Add comment token");
+                                            if (dlg.showAndGet()) {
+                                                HighlightTokenType highlightTokenType = dlg.getCustomTokenType();
+                                                String tokenValue = dlg.getToken();
 
-                                        tableModel.addRow(Pair.create(highlightTokenType, tokenValue));
-                                    }
-                                })
-                                .setRemoveAction(button -> {
-                                    int returnValue = Messages.showOkCancelDialog("Delete selected token?",
-                                            UIBundle.message("delete.dialog.title"),
-                                            ApplicationBundle.message("button.delete"),
-                                            CommonBundle.getCancelButtonText(),
-                                            Messages.getQuestionIcon());
-                                    if (returnValue == Messages.OK) {
-                                        tableModel.removeRow(tokenTable.getSelectedRow());
-                                    }
-                                })
-                                .setEditAction(button -> {
-                                    int selectedRow = tokenTable.getSelectedRow();
-                                    Pair<HighlightTokenType, String> value = tableModel.getItem(selectedRow);
+                                                tableModel.addRow(Pair.create(highlightTokenType, tokenValue));
+                                            }
+                                        })
+                                        .setRemoveAction(button -> {
+                                            int returnValue = Messages.showOkCancelDialog("Delete selected token?",
+                                                    UIBundle.message("delete.dialog.title"),
+                                                    ApplicationBundle.message("button.delete"),
+                                                    CommonBundle.getCancelButtonText(),
+                                                    Messages.getQuestionIcon());
+                                            if (returnValue == Messages.OK) {
+                                                tableModel.removeRow(tokenTable.getSelectedRow());
+                                            }
+                                        })
+                                        .setEditAction(button -> {
+                                            int selectedRow = tokenTable.getSelectedRow();
+                                            Pair<HighlightTokenType, String> value = tableModel.getItem(selectedRow);
 
-                                    AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
-                                    dlg.setTitle("Edit comment token");
-                                    dlg.setCustomTokenType(value.first);
-                                    dlg.setToken(value.second);
+                                            AddUpdateCommentTokenDialog dlg = new AddUpdateCommentTokenDialog();
+                                            dlg.setTitle("Edit comment token");
+                                            dlg.setCustomTokenType(value.first);
+                                            dlg.setToken(value.second);
 
-                                    if (dlg.showAndGet()) {
-                                        final HighlightTokenType editedHighlightTokenType = dlg.getCustomTokenType();
-                                        final String editedToken = dlg.getToken();
+                                            if (dlg.showAndGet()) {
+                                                final HighlightTokenType editedHighlightTokenType = dlg.getCustomTokenType();
+                                                final String editedToken = dlg.getToken();
 
-                                        tableModel.removeRow(selectedRow);
-                                        tableModel.insertRow(selectedRow, Pair.create(editedHighlightTokenType, editedToken));
-                                    }
-                                })
-                                .setButtonComparator("Add", "Edit", "Remove")
-                                .disableUpDownActions()
-                                .createPanel()
+                                                tableModel.removeRow(selectedRow);
+                                                tableModel.insertRow(selectedRow, Pair.create(editedHighlightTokenType, editedToken));
+                                            }
+                                        })
+                                        .setButtonComparator("Add", "Edit", "Remove")
+                                        .disableUpDownActions()
+                                        .createPanel()
                 );
         return tokensTablePanel;
     }
@@ -129,16 +130,12 @@ public class CommentTokensConfigurationPanel extends BorderLayoutPanel implement
 
         Map<HighlightTokenType, List<String>> updatedTokens = getTokenMapFromModel(tableModel);
 
-        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
         tokenConfiguration.setCustomTokens(updatedTokens);
         tokenConfiguration.setPlainTextFileHighlightEnabled(plainFilesHighlighting.isSelected());
     }
 
     @Override
     public boolean isModified() {
-
-        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
-
         boolean savedValue = tokenConfiguration.isPlainTextFileHighlightEnabled();
         boolean currentValue = plainFilesHighlighting.isSelected();
 
@@ -163,7 +160,6 @@ public class CommentTokensConfigurationPanel extends BorderLayoutPanel implement
     public void reset() {
         tableModel = new ListTableModel<>(TYPE_COLUMN, NAME_COLUMN);
 
-        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
         Map<HighlightTokenType, Collection<String>> allTokens = tokenConfiguration.getAllTokens();
 
         for (Map.Entry<HighlightTokenType, Collection<String>> entry : allTokens.entrySet()) {

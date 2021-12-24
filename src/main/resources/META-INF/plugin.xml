@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.clutcher.comments_highlighter</id>
-    <idea-version since-build="201.30119"/>
+    <idea-version since-build="202.0"/>
     <name>Comments Highlighter</name>
     <vendor email="iclutcher@gmail.com" url="https://clutcher.github.io">clutcher</vendor>
 

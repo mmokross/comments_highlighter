@@ -3,8 +3,8 @@ package com.clutcher.comments.highlighter.impl;
 import com.clutcher.comments.configuration.HighlightTokenConfiguration;
 import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.clutcher.comments.highlighter.TokenHighlighter;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.Service;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -19,13 +19,15 @@ import java.util.List;
 @Service
 public class CommentHighlighter implements TokenHighlighter {
 
+    private static final HighlightTokenConfiguration tokenConfiguration = ApplicationManager.getApplication().getService(HighlightTokenConfiguration.class);
+
     private static final String DOC_COMMENT_START_LINE = "/**";
     private static final List<Character> START_LINE_CHARACTERS_LIST = Arrays.asList('/', '<', '-', ' ', '#', '*', '!', '\t', '{');
 
     @Override
     public List<Pair<TextRange, TextAttributesKey>> getHighlights(String text, int startOffset) {
 
-        Collection<String> supportedTokens = ServiceManager.getService(HighlightTokenConfiguration.class).getAllTokensByType(getSupportedTokenTypes());
+        Collection<String> supportedTokens = tokenConfiguration.getAllTokensByType(getSupportedTokenTypes());
 
         // General comment data
         final int commentLength = text.length();

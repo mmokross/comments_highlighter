@@ -3,8 +3,8 @@ package com.clutcher.comments.highlighter.impl;
 import com.clutcher.comments.configuration.HighlightTokenConfiguration;
 import com.clutcher.comments.highlighter.HighlightTokenType;
 import com.clutcher.comments.highlighter.TokenHighlighter;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.Service;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -17,9 +17,10 @@ import java.util.stream.Collectors;
 @Service
 public class KeywordHighlighter implements TokenHighlighter {
 
+    private static final HighlightTokenConfiguration tokenConfiguration = ApplicationManager.getApplication().getService(HighlightTokenConfiguration.class);
+
     @Override
     public List<Pair<TextRange, TextAttributesKey>> getHighlights(String text, int startOffset) {
-        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
         Collection<String> supportedTokens = tokenConfiguration.getAllTokensByType(getSupportedTokenTypes());
 
         var textRange = new TextRange(startOffset, startOffset + text.length());
@@ -29,7 +30,6 @@ public class KeywordHighlighter implements TokenHighlighter {
 
     @Override
     public List<Pair<TextRange, TextAttributesKey>> getHighlights(HighlightTokenType tokenType, String text, int startOffset) {
-        HighlightTokenConfiguration tokenConfiguration = ServiceManager.getService(HighlightTokenConfiguration.class);
         Collection<String> supportedTokens = tokenConfiguration.getAllTokensByType(tokenType);
 
         var textRange = new TextRange(startOffset, startOffset + text.length());
@@ -49,10 +49,10 @@ public class KeywordHighlighter implements TokenHighlighter {
 
     private List<Pair<TextRange, TextAttributesKey>> createHighlightsForMatchingTokens(Collection<String> supportedTokens, String text, TextRange textRange) {
         return supportedTokens.stream()
-                .filter(token -> token.equalsIgnoreCase(text))
-                .map(token -> TextAttributesKey.createTextAttributesKey(getTextAttributeKeyByToken(token)))
-                .map(highlightAttribute -> Pair.create(textRange, highlightAttribute))
-                .collect(Collectors.toList());
+                              .filter(token -> token.equalsIgnoreCase(text))
+                              .map(token -> TextAttributesKey.createTextAttributesKey(getTextAttributeKeyByToken(token)))
+                              .map(highlightAttribute -> Pair.create(textRange, highlightAttribute))
+                              .collect(Collectors.toList());
 
     }
 }
