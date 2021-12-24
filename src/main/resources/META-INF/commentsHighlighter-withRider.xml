@@ -1,7 +1,11 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
+        <annotator language="C#"
+                   implementationClass="com.clutcher.comments.annotator.impl.CSharpKeywordHighlighterAnnotator"/>
+
         <!-- Used for C++ and header files in Rider IDE -->
         <annotator language="C++"
                    implementationClass="com.clutcher.comments.annotator.impl.CPPLexerPostProcessingHighlighterAnnotator"/>
+
     </extensions>
 </idea-plugin>
