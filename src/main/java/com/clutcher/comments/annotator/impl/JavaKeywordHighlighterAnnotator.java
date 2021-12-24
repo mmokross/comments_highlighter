@@ -11,7 +11,9 @@ public class JavaKeywordHighlighterAnnotator extends AbstractKeywordHighlighterA
     private final Class<?> methodClazz;
 
     public JavaKeywordHighlighterAnnotator() {
-        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.intellij.psi.PsiKeyword");
+        // Java keywords implements both PsiKeyword and PsiJavaToken
+        // Java literal tokens (null, true, false etc) implements only PsiJavaToken
+        this.keywordTokenClazz = AnnotatorUtils.findClassByName("com.intellij.psi.PsiJavaToken");
         this.methodClazz = AnnotatorUtils.findClassByName("com.intellij.psi.PsiMethod");
     }
 
