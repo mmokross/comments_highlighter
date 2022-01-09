@@ -1,6 +1,0 @@
-<idea-plugin>
-    <extensions defaultExtensionNs="com.intellij">
-        <annotator language="JavaScript"
-                   implementationClass="com.clutcher.comments.annotator.impl.JavaScriptKeywordHighlighterAnnotator"/>
-    </extensions>
-</idea-plugin>
