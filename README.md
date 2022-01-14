@@ -1,9 +1,7 @@
 # Comments Highlighter
 
-This plugin allows creating custom highlighting for commented lines and language keyword. Commented lines highlighting
-is supported for any language, highlighting of language keywords supports Java, Kotlin, PHP, C/C++/ObjectiveC and C# (
-for example, highlight "public" keyword). Plugin has possibility to define custom user tokens for commented line
-highlighting.
+This plugin allows creating custom highlighting for commented lines and language keyword. Commented lines highlighting is supported for any language, highlighting of language keywords supports Java, Kotlin, PHP, Javascript/Typescript, C/C++/ObjectiveC and C# (
+for example, highlight "public" keyword). Plugin has possibility to define custom user tokens for commented line highlighting.
 
 ## How to add comment highlighting token or language keyword
 
@@ -46,6 +44,7 @@ General architecture is simple and has 2 main parts:
       + **CKeywordHighlighterAnnotator**
       + **CSharpKeywordHighlighterAnnotator**
       + **PHPKeywordHighlighterAnnotator**
+      + **JavaScriptKeywordHighlighterAnnotator**
   + **AbstractLexerPostProcessingHighlighterAnnotator**
     abstract [Annotator](https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/syntax_highlighting_and_error_highlighting.html#annotator)
     to highlight both comments and keywords defined in Lexer segments. Used for files, which have only lexer highlighting, for example C++ files in Rider.
@@ -55,6 +54,10 @@ General architecture is simple and has 2 main parts:
   + **KeywordHighlighter** main class to define, what keywords must be highlighted.
 
 ## Version history
+
+### 2.4.1
+
++ **(Feature)** Add possibility to highlight Javascript/Typescript keywords.
 
 ### 2.4
 
